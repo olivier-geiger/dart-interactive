@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DartMaster Pro — Du Débutant à l'Expert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080F;--bg2:#080C18;--surf:#0D1424;--surf2:#111A2E;
+  --card:#141E35;--card2:#192340;
+  --bdr:rgba(255,255,255,0.06);--bdr-b:rgba(14,165,233,0.25);
+  --pr:#0EA5E9;--pr-d:rgba(14,165,233,0.12);--pr-g:rgba(14,165,233,0.35);
+  --ac:#F97316;--ac-d:rgba(249,115,22,0.12);
+  --ok:#10B981;--pu:#8B5CF6;--pk:#EC4899;--ye:#F59E0B;
+  --tx:#E2E8F0;--tx2:#94A3B8;--tx3:#475569;
+  --fd:'Playfair Display',Georgia,serif;
+  --fm:'JetBrains Mono','Courier New',monospace;
+  --fb:'Outfit',system-ui,sans-serif;
+  --r:12px;--rl:20px;--tr:.3s cubic-bezier(.4,0,.2,1)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);line-height:1.6;overflow-x:hidden}
+
+/* BG */
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 15% 15%,rgba(14,165,233,.07) 0,transparent 55%),
+              radial-gradient(ellipse at 85% 85%,rgba(249,115,22,.05) 0,transparent 55%),
+              linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+              linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,64px 64px,64px 64px;
+  pointer-events:none;z-index:0}
+
+/* PROGRESS BAR */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--pr),var(--ac));width:0%;z-index:9999;transition:width .1s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(5,8,15,.82);border-bottom:1px solid var(--bdr);transition:var(--tr)}
+.nav-logo{display:flex;align-items:center;gap:.625rem;text-decoration:none;color:var(--tx)}
+.logo-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--pr),var(--ac));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:700;color:#000;font-size:.85rem}
+.nav-brand{font-family:var(--fm);font-weight:600;font-size:1rem}
+.nav-brand span{color:var(--pr)}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{color:var(--tx2);text-decoration:none;font-size:.85rem;font-weight:500;transition:color var(--tr)}
+.nav-links a:hover{color:var(--tx)}
+.btn{display:inline-flex;align-items:center;gap:.4rem;border-radius:var(--r);font-family:var(--fb);font-weight:700;font-size:.875rem;padding:.65rem 1.4rem;cursor:pointer;text-decoration:none;transition:var(--tr)}
+.btn-p{background:linear-gradient(135deg,var(--pr),#38BDF8);color:#000;border:none}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--pr-g)}
+.btn-o{background:transparent;color:var(--tx);border:1px solid var(--bdr-b)}
+.btn-o:hover{background:var(--pr-d);border-color:var(--pr)}
+.btn-lg{padding:.9rem 2.25rem;font-size:1rem}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:7.5rem 2rem 4rem;z-index:1}
+.hero-wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--pr-d);border:1px solid var(--bdr-b);color:var(--pr);font-family:var(--fm);font-size:.72rem;padding:.375rem .875rem;border-radius:100px;margin-bottom:1.5rem;animation:fuUp .6s ease both}
+.badge-dot{width:6px;height:6px;background:var(--pr);border-radius:50%;animation:bpulse 2s ease infinite}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.hero-title{font-family:var(--fd);font-size:clamp(2.6rem,5.2vw,4.6rem);font-weight:900;line-height:1.04;margin-bottom:1.5rem;animation:fuUp .6s ease .08s both}
+.hero-title .l1{display:block}
+.hero-title .l2{display:block;background:linear-gradient(90deg,var(--pr),var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.hero-title .l3{display:block}
+.hero-desc{font-size:1.0375rem;color:var(--tx2);line-height:1.75;margin-bottom:2rem;max-width:460px;animation:fuUp .6s ease .16s both}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;animation:fuUp .6s ease .24s both}
+.hero-meta{display:flex;gap:2.5rem;margin-top:2.5rem;animation:fuUp .6s ease .32s both}
+.hm strong{font-family:var(--fm);font-size:1.6rem;font-weight:600;display:block}
+.hm span{font-size:.7rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}
+
+/* TERMINAL */
+.terminal{background:#0D1117;border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.02);animation:fuRight .8s ease .15s both;position:relative}
+@keyframes fuRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.term-bar{display:flex;align-items:center;padding:.8rem 1.25rem;background:#010409;border-bottom:1px solid var(--bdr);gap:.5rem}
+.tdots{display:flex;gap:.35rem}
+.tdots span{width:12px;height:12px;border-radius:50%}
+.tdots span:nth-child(1){background:#FF5F57}
+.tdots span:nth-child(2){background:#FFBD2E}
+.tdots span:nth-child(3){background:#28C840}
+.term-fname{font-family:var(--fm);font-size:.72rem;color:var(--tx3);margin:0 auto}
+.term-body{padding:1.4rem 1.5rem;font-family:var(--fm);font-size:.785rem;line-height:1.85}
+.tl{display:flex;align-items:flex-start;gap:1rem}
+.ln{color:var(--tx3);min-width:1.5rem;text-align:right;user-select:none;opacity:0}
+.lc{flex:1;opacity:0}
+.k{color:#C792EA}.t{color:#FFCB6B}.s{color:#C3E88D}.cm{color:#546E7A;font-style:italic}.f{color:#82AAFF}.n{color:#F07178}.v{color:#EEFFFF}.pu{color:#89DDFF}.ot{color:#F97316}
+.cursor{display:inline-block;width:2px;height:13px;background:var(--pr);animation:cblink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+.term-out{background:rgba(0,0,0,.4);border-top:1px solid var(--bdr);padding:.875rem 1.5rem;font-family:var(--fm);font-size:.75rem}
+.term-out .ol{color:var(--tx3);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.term-out .ov{color:var(--ok)}
+
+/* STATS */
+#stats{position:relative;z-index:1;padding:3.5rem 2rem;background:var(--surf);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.stats-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center}
+.stat-val{font-family:var(--fm);font-size:3rem;font-weight:600;display:block;margin-bottom:.25rem}
+.sv-b{color:var(--pr)}.sv-o{color:var(--ac)}.sv-g{color:var(--ok)}.sv-p{color:var(--pu)}
+.stat-lbl{font-size:.75rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.09em}
+
+/* SECTION HEADERS */
+.sec-head{text-align:center;margin-bottom:3.5rem}
+.sec-tag{font-family:var(--fm);font-size:.72rem;color:var(--pr);text-transform:uppercase;letter-spacing:.16em;display:block;margin-bottom:.75rem}
+.sec-title{font-family:var(--fd);font-size:clamp(1.9rem,3.8vw,3.1rem);font-weight:700;line-height:1.15;margin-bottom:1rem}
+.sec-desc{font-size:.9875rem;color:var(--tx2);max-width:500px;margin:0 auto}
+
+/* ROADMAP */
+#path{position:relative;z-index:1;padding:6rem 2rem}
+.road-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.road-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:1.75rem;position:relative;overflow:hidden;transition:var(--tr)}
+.road-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:2px 2px 0 0}
+.rc1::before{background:linear-gradient(90deg,var(--pr),#38BDF8)}
+.rc2::before{background:linear-gradient(90deg,var(--ac),#FB923C)}
+.rc3::before{background:linear-gradient(90deg,var(--ok),#34D399)}
+.rc4::before{background:linear-gradient(90deg,var(--pu),#A78BFA)}
+.rc5::before{background:linear-gradient(90deg,var(--pk),#F472B6)}
+.rc6::before{background:linear-gradient(90deg,var(--ye),#FCD34D)}
+.road-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.road-num{font-family:var(--fm);font-size:.68rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.road-title{font-size:1.05rem;font-weight:700;color:var(--tx);margin-bottom:.375rem}
+.road-sub{font-size:.8125rem;color:var(--tx2);line-height:1.55;margin-bottom:1.25rem}
+.road-level{display:inline-flex;align-items:center;gap:.375rem;font-family:var(--fm);font-size:.68rem;padding:.25rem .625rem;border-radius:100px;border:1px solid}
+.lv-deb{color:#0EA5E9;border-color:rgba(14,165,233,.3);background:rgba(14,165,233,.08)}
+.lv-int{color:#F97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.08)}
+.lv-adv{color:#10B981;border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.08)}
+.lv-exp{color:#F59E0B;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+.road-excount{font-family:var(--fm);font-size:.75rem;color:var(--tx3);margin-top:.875rem}
+.road-excount strong{color:var(--tx)}
+
+/* CURRICULUM */
+#curriculum{position:relative;z-index:1;padding:6rem 2rem;background:var(--surf)}
+.curr-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.mod-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;transition:border-color var(--tr)}
+.mod-card:hover,.mod-card.open{border-color:var(--bdr-b)}
+.mod-hd{padding:1.5rem;cursor:pointer;display:flex;align-items:flex-start;gap:1rem;user-select:none}
+.mod-ico{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.mi1{background:rgba(14,165,233,.12)}.mi2{background:rgba(249,115,22,.12)}.mi3{background:rgba(16,185,129,.12)}
+.mi4{background:rgba(139,92,246,.12)}.mi5{background:rgba(236,72,153,.12)}.mi6{background:rgba(245,158,11,.12)}
+.mod-info{flex:1;min-width:0}
+.mod-num{font-family:var(--fm);font-size:.68rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem}
+.mod-name{font-size:.975rem;font-weight:700;color:var(--tx);line-height:1.3;margin-bottom:.5rem}
+.mod-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+.tag{font-family:var(--fm);font-size:.6rem;padding:.18rem .5rem;border-radius:4px;background:rgba(255,255,255,.04);color:var(--tx2);border:1px solid var(--bdr)}
+.mod-ft{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.5rem;border-top:1px solid var(--bdr);background:var(--surf2)}
+.mod-counts{display:flex;gap:1.25rem}
+.ci{display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--tx2)}
+.ci strong{font-family:var(--fm);font-weight:600;color:var(--tx)}
+.xbtn{background:none;border:1px solid var(--bdr);color:var(--tx2);width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--tr);font-size:.875rem}
+.xbtn:hover,.mod-card.open .xbtn{background:var(--pr-d);border-color:var(--pr);color:var(--pr)}
+.mod-card.open .xbtn{transform:rotate(180deg)}
+.mod-body{display:none;padding:0 1.5rem 1.5rem}
+.mod-card.open .mod-body{display:block;animation:slDown .28s ease}
+@keyframes slDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.lesson-list{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.li{display:flex;align-items:center;gap:.75rem;padding:.55rem .8rem;border-radius:8px;background:var(--surf2);border:1px solid transparent;transition:var(--tr);cursor:default}
+.li:hover{border-color:var(--bdr-b);background:var(--pr-d)}
+.li-num{font-family:var(--fm);font-size:.62rem;color:var(--tx3);min-width:2rem}
+.li-name{font-size:.785rem;color:var(--tx2);flex:1}
+.li-type{font-family:var(--fm);font-size:.58rem;padding:.14rem .42rem;border-radius:4px;font-weight:600;white-space:nowrap}
+.ty-l{background:rgba(14,165,233,.12);color:var(--pr)}
+.ty-e{background:rgba(249,115,22,.12);color:var(--ac)}
+.ty-p{background:rgba(16,185,129,.12);color:var(--ok)}
+
+/* CODE PREVIEW */
+#preview{position:relative;z-index:1;padding:6rem 2rem}
+.prev-wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.3fr;gap:3rem;align-items:start}
+.prev-steps{margin-top:2rem;display:flex;flex-direction:column;gap:.75rem}
+.pstep{display:flex;gap:.875rem;align-items:flex-start;padding:.875rem;border-radius:var(--r);border:1px solid transparent;cursor:pointer;transition:var(--tr)}
+.pstep.act,.pstep:hover{background:var(--pr-d);border-color:var(--bdr-b)}
+.pstep-n{width:26px;height:26px;border-radius:7px;background:var(--pr-d);border:1px solid var(--bdr-b);color:var(--pr);font-family:var(--fm);font-size:.72rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr)}
+.pstep.act .pstep-n{background:var(--pr);color:#000;border-color:var(--pr)}
+.pstep-t{font-size:.85rem;font-weight:700;color:var(--tx);margin-bottom:.15rem}
+.pstep-d{font-size:.775rem;color:var(--tx2)}
+.code-ed{background:#0D1117;border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.ed-tabs{display:flex;background:#010409;border-bottom:1px solid var(--bdr);overflow-x:auto}
+.etab{padding:.7rem 1.1rem;font-family:var(--fm);font-size:.72rem;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:var(--tr)}
+.etab:hover{color:var(--tx2)}
+.etab.act{color:var(--tx);border-bottom-color:var(--pr);background:rgba(14,165,233,.05)}
+.ed-pre{padding:1.4rem 1.5rem;font-family:var(--fm);font-size:.785rem;line-height:1.8;overflow-x:auto;min-height:280px;white-space:pre}
+.ed-out{padding:.875rem 1.5rem;background:rgba(0,0,0,.35);border-top:1px solid var(--bdr);font-family:var(--fm);font-size:.785rem}
+.out-lbl{font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.out-val{color:var(--ok)}
+
+/* FEATURES */
+#features{position:relative;z-index:1;padding:6rem 2rem;background:var(--surf)}
+.feat-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.feat-card{padding:1.75rem;background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);transition:var(--tr)}
+.feat-card:hover{border-color:var(--bdr-b);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.feat-ico{font-size:1.75rem;margin-bottom:1rem;display:block}
+.feat-t{font-size:1rem;font-weight:700;color:var(--tx);margin-bottom:.5rem}
+.feat-d{font-size:.875rem;color:var(--tx2);line-height:1.65}
+
+/* INSTRUCTOR */
+#instructor{position:relative;z-index:1;padding:6rem 2rem}
+.inst-wrap{max-width:860px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:3.5rem;align-items:center}
+.inst-av{width:160px;height:160px;border-radius:22px;background:linear-gradient(135deg,var(--pr),var(--ac));display:flex;align-items:center;justify-content:center;font-size:4rem;border:2px solid var(--bdr-b);box-shadow:0 16px 48px var(--pr-g);flex-shrink:0}
+.inst-name{font-family:var(--fd);font-size:2rem;font-weight:700;margin-bottom:.5rem}
+.inst-role{font-size:.9rem;color:var(--tx2);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.badge-gg{font-size:.78rem;font-weight:700;padding:.25rem .65rem;border-radius:6px;border:1px solid rgba(66,133,244,.35);background:linear-gradient(90deg,#4285F4,#34A853,#FBBC05,#EA4335);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.inst-bio{font-size:.925rem;color:var(--tx2);line-height:1.75;margin-bottom:1.5rem}
+.inst-stats{display:flex;gap:2rem}
+.is strong{font-family:var(--fm);font-size:1.5rem;color:var(--tx);display:block}
+.is span{font-size:.7rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+
+/* TESTIMONIALS */
+#reviews{position:relative;z-index:1;padding:6rem 2rem;background:var(--surf)}
+.rev-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.rev-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:1.5rem;transition:var(--tr)}
+.rev-card:hover{border-color:var(--bdr-b)}
+.rev-stars{color:var(--ye);font-size:.875rem;margin-bottom:.875rem;letter-spacing:.1em}
+.rev-text{font-size:.875rem;color:var(--tx2);line-height:1.7;margin-bottom:1.25rem;font-style:italic}
+.rev-auth{display:flex;align-items:center;gap:.75rem}
+.rev-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#000;flex-shrink:0}
+.rev-n{font-size:.825rem;font-weight:600;color:var(--tx)}
+.rev-r{font-size:.75rem;color:var(--tx3)}
+
+/* CTA */
+#cta{position:relative;z-index:1;padding:7rem 2rem;text-align:center;overflow:hidden}
+#cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(14,165,233,.1) 0,transparent 65%);pointer-events:none}
+.cta-inner{max-width:680px;margin:0 auto;position:relative;z-index:1}
+.cta-t{font-family:var(--fd);font-size:clamp(2.25rem,4vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:1.25rem}
+.cta-t em{font-style:italic;background:linear-gradient(90deg,var(--pr),var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-d{font-size:1.0375rem;color:var(--tx2);margin-bottom:2.5rem;line-height:1.7}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cta-note{margin-top:1.5rem;font-family:var(--fm);font-size:.75rem;color:var(--tx3)}
+
+/* FOOTER */
+footer{position:relative;z-index:1;padding:2rem;text-align:center;border-top:1px solid var(--bdr)}
+footer p{font-family:var(--fm);font-size:.72rem;color:var(--tx3)}
+footer span{color:var(--pr)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.rv.vis{opacity:1;transform:translateY(0)}
+
+/* KEYFRAMES */
+@keyframes fuUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* SCROLLTOP */
+#stb{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;border-radius:10px;background:var(--card);border:1px solid var(--bdr);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;opacity:0;transform:translateY(12px);transition:var(--tr);z-index:500}
+#stb.show{opacity:1;transform:translateY(0)}
+#stb:hover{background:var(--pr-d);border-color:var(--pr);color:var(--pr)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-wrap,.prev-wrap,.inst-wrap{grid-template-columns:1fr}
+  .terminal{display:none}
+  .curr-grid,.road-grid,.feat-grid,.rev-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .nav-links{display:none}
+  .hero-btns{flex-direction:column}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">D</div>
+    <span class="nav-brand">Dart<span>Master</span> Pro</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#path">Parcours</a></li>
+    <li><a href="#curriculum">Curriculum</a></li>
+    <li><a href="#preview">Exercices</a></li>
+    <li><a href="#instructor">Formateur</a></li>
+  </ul>
+  <a href="#cta" class="btn btn-p">Commencer — Gratuit</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-wrap">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="badge-dot"></span> Google Developer Expert · Dart &amp; Flutter</div>
+      <h1 class="hero-title">
+        <span class="l1">Maîtrisez</span>
+        <span class="l2">Dart</span>
+        <span class="l3">de Zéro à Expert.</span>
+      </h1>
+      <p class="hero-desc">Le cours le plus complet en français pour apprendre Dart. 6 modules progressifs, 100 exercices pratiques, des projets réels. De vos premiers <code style="font-family:var(--fm);color:var(--pr);font-size:.9em">print()</code> aux Streams et à la programmation concurrente.</p>
+      <div class="hero-btns">
+        <a href="#curriculum" class="btn btn-p btn-lg">📚 Voir le curriculum</a>
+        <a href="#preview" class="btn btn-o btn-lg">▶ Essayer un exercice</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hm"><strong>100</strong><span>Exercices</span></div>
+        <div class="hm"><strong>6</strong><span>Modules</span></div>
+        <div class="hm"><strong>40h+</strong><span>De contenu</span></div>
+        <div class="hm"><strong>8 ans</strong><span>D'expertise</span></div>
+      </div>
+    </div>
+    <div class="terminal" id="heroTerm">
+      <div class="term-bar">
+        <div class="tdots"><span></span><span></span><span></span></div>
+        <span class="term-fname">dart_master.dart</span>
+      </div>
+      <div class="term-body" id="termLines"></div>
+      <div class="term-out">
+        <div class="ol">▶ Output</div>
+        <div class="ov" id="termOut"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="rv"><span class="stat-val sv-b" data-target="100">0</span><span class="stat-lbl">Exercices Pratiques</span></div>
+    <div class="rv"><span class="stat-val sv-o" data-target="6">0</span><span class="stat-lbl">Modules Progressifs</span></div>
+    <div class="rv"><span class="stat-val sv-g" data-target="40">0</span><span class="stat-lbl">Heures de contenu</span></div>
+    <div class="rv"><span class="stat-val sv-p" data-target="8">0</span><span class="stat-lbl">Ans d'Expertise</span></div>
+  </div>
+</section>
+
+<!-- PARCOURS -->
+<section id="path">
+  <div class="sec-head rv">
+    <span class="sec-tag">// Votre Parcours</span>
+    <h2 class="sec-title">De débutant complet à développeur expert</h2>
+    <p class="sec-desc">Un chemin balisé, progressif et structuré pour maîtriser Dart sans lacunes.</p>
+  </div>
+  <div class="road-grid" id="roadGrid"></div>
+</section>
+
+<!-- CURRICULUM -->
+<section id="curriculum">
+  <div class="sec-head rv">
+    <span class="sec-tag">// Programme Complet</span>
+    <h2 class="sec-title">100 exercices, rien n'est laissé au hasard</h2>
+    <p class="sec-desc">Chaque module est conçu pour construire votre expertise sur des bases solides, exercice après exercice.</p>
+  </div>
+  <div class="curr-grid" id="currGrid"></div>
+</section>
+
+<!-- PREVIEW -->
+<section id="preview">
+  <div class="prev-wrap">
+    <div class="prev-info rv">
+      <div class="sec-head" style="text-align:left">
+        <span class="sec-tag">// Aperçu des Exercices</span>
+        <h2 class="sec-title" style="font-size:clamp(1.8rem,3.2vw,2.6rem)">Du code réel, des vrais défis</h2>
+        <p class="sec-desc" style="margin:0;max-width:420px">Chaque exercice est conçu pour ancrer un concept précis. Vous ne lisez pas — vous codez.</p>
+      </div>
+      <div class="prev-steps" id="prevSteps"></div>
+    </div>
+    <div class="rv">
+      <div class="code-ed">
+        <div class="ed-tabs" id="edTabs"></div>
+        <pre class="ed-pre" id="edPre"></pre>
+        <div class="ed-out"><div class="out-lbl">▶ Résultat</div><div class="out-val" id="edOut"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="sec-head rv">
+    <span class="sec-tag">// Pourquoi ce Cours</span>
+    <h2 class="sec-title">Conçu pour apprendre, pas juste lire</h2>
+    <p class="sec-desc">Chaque décision pédagogique a été pensée pour maximiser votre progression.</p>
+  </div>
+  <div class="feat-grid" id="featGrid"></div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section id="instructor">
+  <div class="inst-wrap rv">
+    <div class="inst-av">🎯</div>
+    <div>
+      <h2 class="inst-name">Alexandre Moreau</h2>
+      <div class="inst-role">
+        <span>Ingénieur Senior · Dart &amp; Flutter</span>
+        <span class="badge-gg">Google Developer Expert</span>
+      </div>
+      <p class="inst-bio">8 ans à architecturer des applications Dart en production pour des entreprises du CAC 40 et des startups de la Silicon Valley. Conférencier au DartConf, auteur de 3 packages populaires sur pub.dev (2.4M+ téléchargements cumulés), et passionné de pédagogie. Mon objectif : vous faire acquérir en semaines ce qui m'a pris des années.</p>
+      <div class="inst-stats">
+        <div class="is"><strong>2.4M+</strong><span>Téléchargements</span></div>
+        <div class="is"><strong>3</strong><span>Packages pub.dev</span></div>
+        <div class="is"><strong>12k+</strong><span>Étudiants formés</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="sec-head rv">
+    <span class="sec-tag">// Témoignages</span>
+    <h2 class="sec-title">Ce que disent les apprenants</h2>
+  </div>
+  <div class="rev-grid" id="revGrid"></div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner rv">
+    <h2 class="cta-t">Votre voyage <em>Dart</em><br>commence ici.</h2>
+    <p class="cta-d">Rejoignez 12 000+ développeurs qui ont choisi la méthode DartMaster. Accès complet, exercices corrigés, mises à jour incluses pour toujours.</p>
+    <div class="cta-btns">
+      <a href="#curriculum" class="btn btn-p btn-lg">🚀 Commencer Gratuitement</a>
+      <a href="#preview" class="btn btn-o btn-lg">👁 Aperçu du Cours</a>
+    </div>
+    <p class="cta-note">// Aucune carte bancaire requise · Accès immédiat · Mises à jour Dart 3 incluses</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 <span>DartMaster Pro</span> · Conçu avec ❤ par un <span>Google Developer Expert</span> · Dart &amp; Flutter</p>
+</footer>
+
+<button id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ===================== DATA ===================== */
+
+const MODULES = [
+  {
+    id:1,ico:'🔧',mc:'mi1',num:'Module 01',
+    name:'Les Fondamentaux',
+    tags:['var/final/const','Types','Conditions','Boucles','Fonctions','Null Safety'],
+    lessons:12,exercises:17,exRange:'Exercices 01 → 17',
+    items:[
+      {t:'l',n:'Installation & DartPad — Votre premier environnement'},
+      {t:'l',n:'Variables: var, final, const — Quelle différence?'},
+      {t:'l',n:'Types primitifs: int, double, String, bool, dynamic'},
+      {t:'e',x:1,n:'Déclarer et afficher des variables typées'},
+      {t:'e',x:2,n:'Conversions de types: toString(), int.parse()'},
+      {t:'l',n:'Null Safety: ?, !, late, ?? — Zéro NullPointerException'},
+      {t:'e',x:3,n:'Gestion sécurisée des valeurs nullables'},
+      {t:'l',n:'Opérateurs: arithmétique, comparaison, logique, bitwise'},
+      {t:'e',x:4,n:'Calculatrice en ligne de commande'},
+      {t:'e',x:5,n:'Conversion de degrés Celsius/Fahrenheit'},
+      {t:'l',n:'Conditions: if/else if/else, switch, expressions ternaires'},
+      {t:'e',x:6,n:'Système de notation scolaire (A→F)'},
+      {t:'e',x:7,n:'Calculateur d\'IMC avec catégorie'},
+      {t:'l',n:'Boucles: for, for-in, for-each, while, do-while'},
+      {t:'l',n:'Contrôle de flux: break, continue, labels imbriqués'},
+      {t:'e',x:8,n:'Table de multiplication formatée'},
+      {t:'e',x:9,n:'Suite de Fibonacci jusqu\'à N'},
+      {t:'l',n:'Fonctions: types de retour, paramètres positionnels'},
+      {t:'l',n:'Paramètres nommés, optionnels et valeurs par défaut'},
+      {t:'e',x:10,n:'FizzBuzz avancé avec paramètres personnalisables'},
+      {t:'e',x:11,n:'Vérificateur de nombres premiers'},
+      {t:'l',n:'Arrow functions, fonctions anonymes, closures basiques'},
+      {t:'e',x:12,n:'Mini-utilitaires (palindrome, anagramme, factorielle)'},
+    ]
+  },
+  {
+    id:2,ico:'📦',mc:'mi2',num:'Module 02',
+    name:'Collections & Génériques',
+    tags:['List','Map','Set','Iterable','Spread','Génériques','Queue'],
+    lessons:10,exercises:16,exRange:'Exercices 13 → 28',
+    items:[
+      {t:'l',n:'List: growable, fixed, création et accès'},
+      {t:'l',n:'Méthodes List: add, remove, sort, where, map, fold'},
+      {t:'e',x:13,n:'Tri personnalisé et recherche dans une liste'},
+      {t:'e',x:14,n:'Manipulation avancée de listes (flatten, chunk)'},
+      {t:'l',n:'Map: création, itération, méthodes (putIfAbsent, update)'},
+      {t:'e',x:15,n:'Annuaire téléphonique avec opérations CRUD'},
+      {t:'e',x:16,n:'Compteur de fréquences de mots'},
+      {t:'l',n:'Set: unicité garantie, opérations ensemblistes'},
+      {t:'e',x:17,n:'Union, intersection, différence d\'ensembles'},
+      {t:'l',n:'Iterable & Iterator: lazy evaluation'},
+      {t:'l',n:'Spread operator ..., collection if, collection for'},
+      {t:'e',x:18,n:'Construction dynamique de collections'},
+      {t:'e',x:19,n:'Pipeline de transformation de données'},
+      {t:'l',n:'Génériques <T>: List<T>, Map<K,V>, classes génériques'},
+      {t:'e',x:20,n:'Stack<T> générique avec push/pop/peek'},
+      {t:'e',x:21,n:'Pair<A,B> et Triple<A,B,C> génériques'},
+      {t:'l',n:'Queue, LinkedList, structures de données Dart'},
+      {t:'e',x:22,n:'File d\'attente (Queue) avec priorités'},
+      {t:'e',x:23,n:'Algorithmes classiques sur collections'},
+    ]
+  },
+  {
+    id:3,ico:'🏗',mc:'mi3',num:'Module 03',
+    name:'Programmation Orientée Objet',
+    tags:['Classes','Héritage','Abstraites','Interfaces','Mixins','Enums','Extensions'],
+    lessons:14,exercises:20,exRange:'Exercices 29 → 48',
+    items:[
+      {t:'l',n:'Classes et objets: propriétés, méthodes, instanciation'},
+      {t:'l',n:'Constructeurs: défaut, nommés, redirecteurs'},
+      {t:'l',n:'Constructeurs factory et const — quand et pourquoi'},
+      {t:'e',x:29,n:'Classe Personne avec constructeurs multiples'},
+      {t:'e',x:30,n:'Singleton avec factory constructor'},
+      {t:'l',n:'Getters, setters, propriétés calculées'},
+      {t:'e',x:31,n:'Classe Cercle avec propriétés dérivées'},
+      {t:'l',n:'Héritage avec extends: super, override'},
+      {t:'e',x:32,n:'Hiérarchie de Formes géométriques'},
+      {t:'e',x:33,n:'Système de véhicules (Voiture, Moto, Camion)'},
+      {t:'l',n:'Classes abstraites: contrat et implémentation partielle'},
+      {t:'l',n:'Interfaces avec implements — multiple implémentation'},
+      {t:'e',x:34,n:'Interface Printable, Serializable, Comparable'},
+      {t:'e',x:35,n:'Système de paiement multi-providers'},
+      {t:'l',n:'Mixins avec with — composition de comportements'},
+      {t:'e',x:36,n:'Mixin Flying, Swimming, Running pour animaux'},
+      {t:'e',x:37,n:'Logger mixin réutilisable'},
+      {t:'l',n:'Extensions — ajouter des méthodes à des types existants'},
+      {t:'e',x:38,n:'Extensions sur String (capitalize, toSlug...)'},
+      {t:'e',x:39,n:'Extensions sur DateTime (isToday, fromNow...)'},
+      {t:'l',n:'Enums Dart 3: valeurs, méthodes, propriétés, génériques'},
+      {t:'e',x:40,n:'Enum Direction avec méthodes de navigation'},
+      {t:'e',x:41,n:'Enum Statut de commande avec transitions'},
+      {t:'l',n:'Opérateur cascade .., opérateur d\'accès conditionnel ?.'},
+      {t:'e',x:42,n:'Builder pattern avec cascade operators'},
+      {t:'p',n:'Mini-Projet: Jeu de cartes complet (Carte, Deck, Joueur)'},
+      {t:'e',x:43,n:'Jeu de Bataille — mise en pratique complète de la POO'},
+      {t:'e',x:44,n:'Refactoring: transformer du code procédural en OOP'},
+      {t:'e',x:45,n:'Patron de conception Observer en Dart pur'},
+      {t:'e',x:46,n:'Design Pattern Strategy — algorithmes interchangeables'},
+      {t:'e',x:47,n:'Design Pattern Decorator — composition dynamique'},
+      {t:'e',x:48,n:'Immutabilité: classes const & value objects'},
+    ]
+  },
+  {
+    id:4,ico:'⚡',mc:'mi4',num:'Module 04',
+    name:'Dart Avancé & Fonctionnel',
+    tags:['Closures','HOF','Pattern Matching','Records','Sealed','Exceptions','Dart 3'],
+    lessons:12,exercises:18,exRange:'Exercices 49 → 66',
+    items:[
+      {t:'l',n:'Fonctions de première classe et closures avancées'},
+      {t:'l',n:'Higher-order functions: callbacks, Function types'},
+      {t:'e',x:49,n:'Composition de fonctions (compose, pipe)'},
+      {t:'e',x:50,n:'Memoization et fonctions pures'},
+      {t:'l',n:'map(), where(), reduce(), fold(), expand() — chaînes'},
+      {t:'e',x:51,n:'Pipeline de traitement de données avec chaînage'},
+      {t:'e',x:52,n:'GroupBy, countBy, partitionBy sur Iterables'},
+      {t:'l',n:'Pattern Matching Dart 3: switch expressions avancés'},
+      {t:'l',n:'Patterns: object, record, list, map, logical, relational'},
+      {t:'e',x:53,n:'Parser JSON avec pattern matching exhaustif'},
+      {t:'e',x:54,n:'Machine à états avec switch expressions'},
+      {t:'l',n:'Records (Dart 3): (int, String), ({name: value})'},
+      {t:'e',x:55,n:'Multiple return values avec records typés'},
+      {t:'e',x:56,n:'Déstructuration de records imbriqués'},
+      {t:'l',n:'Sealed classes & exhaustivité des switch'},
+      {t:'e',x:57,n:'Result<T,E> — gestion d\'erreurs fonctionnelle'},
+      {t:'e',x:58,n:'Shape union type avec sealed classes'},
+      {t:'l',n:'Exceptions: try/catch/finally, exception hiérarchie'},
+      {t:'l',n:'Custom exceptions, StackTrace, Zone error handling'},
+      {t:'e',x:59,n:'Système de validation avec exceptions typées'},
+      {t:'e',x:60,n:'Either monad — succès/erreur sans exceptions'},
+      {t:'l',n:'Type system avancé: covariance, contravariance'},
+      {t:'e',x:61,n:'Variance dans les collections génériques'},
+      {t:'l',n:'Lazy evaluation et Iterable generators (sync*)'},
+      {t:'e',x:62,n:'Séquences infinies avec sync* (range, cycle, zip)'},
+      {t:'e',x:63,n:'Parsing d\'expressions arithmétiques (lexer/parser)'},
+      {t:'e',x:64,n:'Arbre de décision typé avec Pattern Matching'},
+      {t:'e',x:65,n:'Option<T> type sûr — alternative au nullable'},
+      {t:'e',x:66,n:'Mini-interpréteur de commandes en Dart pur'},
+    ]
+  },
+  {
+    id:5,ico:'🔄',mc:'mi5',num:'Module 05',
+    name:'Async, Streams & Isolates',
+    tags:['Future','async/await','Stream','StreamController','Isolates','Zones','Completer'],
+    lessons:10,exercises:17,exRange:'Exercices 67 → 83',
+    items:[
+      {t:'l',n:'Event Loop Dart — comprendre l\'asynchronisme'},
+      {t:'l',n:'Future<T>: then, catchError, whenComplete'},
+      {t:'l',n:'async/await — syntaxe et bonnes pratiques'},
+      {t:'e',x:67,n:'Client HTTP simulé avec Future et retry'},
+      {t:'e',x:68,n:'Course de Futures: Future.wait, Future.any'},
+      {t:'e',x:69,n:'Timeout et annulation de Futures'},
+      {t:'l',n:'Streams: single-subscription vs broadcast'},
+      {t:'l',n:'Stream transformers: map, where, take, skip, expand'},
+      {t:'e',x:70,n:'Stream de températures avec alertes'},
+      {t:'e',x:71,n:'Debounce et throttle sur un Stream de frappe'},
+      {t:'e',x:72,n:'Merge et zip de Streams multiples'},
+      {t:'l',n:'StreamController & StreamSink — créer vos Streams'},
+      {t:'e',x:73,n:'EventBus maison avec StreamController'},
+      {t:'e',x:74,n:'Real-time search avec StreamController'},
+      {t:'l',n:'async* et yield — générateurs asynchrones'},
+      {t:'e',x:75,n:'Pagination infinie avec async* generator'},
+      {t:'e',x:76,n:'SSE (Server-Sent Events) simulés'},
+      {t:'l',n:'Completer<T> — convertir callback en Future'},
+      {t:'e',x:77,n:'Dialog confirmation avec Completer'},
+      {t:'l',n:'Isolates — parallélisme vrai en Dart'},
+      {t:'e',x:78,n:'Isolate pour calcul intensif (tri massif)'},
+      {t:'e',x:79,n:'Communication bidirectionnelle entre Isolates'},
+      {t:'l',n:'Zones — error propagation & async context'},
+      {t:'e',x:80,n:'Zone personnalisée pour logging async'},
+      {t:'e',x:81,n:'Traitement de fichier CSV en streaming'},
+      {t:'e',x:82,n:'Pool d\'Isolates pour traitement parallèle'},
+      {t:'p',n:'Mini-Projet Async'},
+      {t:'e',x:83,n:'Pipeline ETL asynchrone complet'},
+    ]
+  },
+  {
+    id:6,ico:'🏆',mc:'mi6',num:'Module 06',
+    name:'Niveau Expert & Écosystème',
+    tags:['dart:io','FFI','Tests','Packages','Performance','Build','pub.dev'],
+    lessons:11,exercises:17,exRange:'Exercices 84 → 100',
+    items:[
+      {t:'l',n:'dart:io — fichiers, stdin/stdout, Process'},
+      {t:'l',n:'dart:convert — JSON, UTF8, Base64, gzip'},
+      {t:'e',x:84,n:'CLI tool: parseur de fichiers JSON/CSV'},
+      {t:'e',x:85,n:'Serveur HTTP bas niveau avec dart:io'},
+      {t:'e',x:86,n:'Watcher de fichiers — surveiller un répertoire'},
+      {t:'l',n:'pub.dev & pubspec.yaml — gestion de dépendances'},
+      {t:'l',n:'Créer et publier un package Dart professionnel'},
+      {t:'e',x:87,n:'Créer un micro-package utilitaire (validation)'},
+      {t:'e',x:88,n:'API client typé avec http + json_serializable'},
+      {t:'l',n:'Unit Testing avec package:test — TDD en Dart'},
+      {t:'l',n:'Mocks avec mockito, tests d\'intégration'},
+      {t:'e',x:89,n:'Suite de tests complète (unit + edge cases)'},
+      {t:'e',x:90,n:'TDD: construire une classe par les tests'},
+      {t:'e',x:91,n:'Test de services async avec Fake implementations'},
+      {t:'l',n:'Dart FFI — appeler des bibliothèques C natives'},
+      {t:'e',x:92,n:'Binding FFI: appeler une lib C de compression'},
+      {t:'l',n:'dart compile — AOT, JIT, JS, WebAssembly'},
+      {t:'e',x:93,n:'Optimisation AOT: mesurer et améliorer'},
+      {t:'l',n:'Profiling, Observatory, memory leaks'},
+      {t:'e',x:94,n:'Identifier et corriger une fuite mémoire'},
+      {t:'e',x:95,n:'Benchmark comparatif de structures de données'},
+      {t:'l',n:'build_runner, code generation, source_gen'},
+      {t:'e',x:96,n:'Générateur de code custom avec source_gen'},
+      {t:'e',x:97,n:'Annotations et reflection-like patterns'},
+      {t:'e',x:98,n:'Architecture hexagonale en Dart pur'},
+      {t:'p',n:'Projet Final'},
+      {t:'e',x:99,n:'Mini-ORM: requêtes typées sur collections'},
+      {t:'e',x:100,n:'CLI Todo App complète — toutes les compétences'},
+    ]
+  }
+];
+
+const ROAD = [
+  {c:'rc1',lv:'lv-deb',lvt:'Débutant',num:'01',title:'Les Fondamentaux',sub:'Variables, types, conditions, boucles, fonctions et null safety — les briques de tout programme Dart.',ex:17},
+  {c:'rc2',lv:'lv-deb',lvt:'Débutant+',num:'02',title:'Collections & Génériques',sub:'List, Map, Set, Iterable, spread operator et le système de génériques puissant de Dart.',ex:16},
+  {c:'rc3',lv:'lv-int',lvt:'Intermédiaire',num:'03',title:'Programmation Orientée Objet',sub:'Classes, héritage, mixins, interfaces, enums riches et design patterns fondamentaux.',ex:20},
+  {c:'rc4',lv:'lv-adv',lvt:'Avancé',num:'04',title:'Dart Avancé & Fonctionnel',sub:'Pattern matching Dart 3, records, sealed classes, closures et programmation fonctionnelle.',ex:18},
+  {c:'rc5',lv:'lv-adv',lvt:'Avancé',num:'05',title:'Async, Streams & Isolates',sub:'Future, async/await, Streams, StreamController, Isolates et concurrence réelle.',ex:17},
+  {c:'rc6',lv:'lv-exp',lvt:'Expert',num:'06',title:'Niveau Expert & Écosystème',sub:'dart:io, FFI, packages, tests, performance, build system et architecture production.',ex:17}
+];
+
+const PREVIEWS = [
+  {
+    t:'01 · Hello Dart',desc:'Votre premier programme',
+    code:`<span class="cm">// Mon premier programme Dart 🎯</span>
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="t">String</span> <span class="v">name</span> = <span class="s">'DartMaster'</span>;
+  <span class="t">int</span> <span class="v">score</span> = <span class="n">100</span>;
+
+  <span class="cm">// String interpolation native</span>
+  <span class="f">print</span>(<span class="s">'Bienvenue sur <span class="pu">$</span><span class="v">name</span> !'</span>);
+  <span class="f">print</span>(<span class="s">'Score: <span class="pu">${</span><span class="v">score</span> * <span class="n">2</span><span class="pu">}</span> pts'</span>);
+
+  <span class="cm">// Null Safety — pas de NPE en Dart</span>
+  <span class="t">String</span>? <span class="v">optional</span>;
+  <span class="f">print</span>(<span class="v">optional</span> ?? <span class="s">'Valeur par défaut'</span>);
+}`,
+    out:`Bienvenue sur DartMaster !
+Score: 200 pts
+Valeur par défaut`
+  },
+  {
+    t:'03 · POO & Mixins',desc:'Classes, héritage et mixins',
+    code:`<span class="cm">// Programmation Orientée Objet</span>
+<span class="k">abstract class</span> <span class="t">Animal</span> {
+  <span class="k">final</span> <span class="t">String</span> <span class="v">name</span>;
+  <span class="t">Animal</span>(<span class="k">this</span>.<span class="v">name</span>);
+
+  <span class="t">String</span> <span class="f">speak</span>(); <span class="cm">// Méthode abstraite</span>
+}
+
+<span class="k">mixin</span> <span class="t">CanFly</span> {
+  <span class="t">String</span> <span class="f">fly</span>() =&gt; <span class="s">'Je vole! ✈'</span>;
+}
+
+<span class="k">class</span> <span class="t">Dog</span> <span class="k">extends</span> <span class="t">Animal</span> {
+  <span class="t">Dog</span>(<span class="t">String</span> <span class="v">name</span>) : <span class="k">super</span>(<span class="v">name</span>);
+  <span class="pu">@override</span>
+  <span class="t">String</span> <span class="f">speak</span>() =&gt; <span class="s">'Woof! Je suis <span class="pu">$</span><span class="v">name</span>'</span>;
+}
+
+<span class="k">class</span> <span class="t">FlyingDog</span> <span class="k">extends</span> <span class="t">Dog</span> <span class="k">with</span> <span class="t">CanFly</span> {
+  <span class="t">FlyingDog</span>(<span class="t">String</span> <span class="v">n</span>) : <span class="k">super</span>(<span class="v">n</span>);
+}
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="k">final</span> <span class="v">d</span> = <span class="t">FlyingDog</span>(<span class="s">'Rex'</span>);
+  <span class="f">print</span>(<span class="v">d</span>.<span class="f">speak</span>());
+  <span class="f">print</span>(<span class="v">d</span>.<span class="f">fly</span>());
+}`,
+    out:`Woof! Je suis Rex
+Je vole! ✈`
+  },
+  {
+    t:'04 · Dart 3 Records',desc:'Records et pattern matching',
+    code:`<span class="cm">// Records &amp; Pattern Matching (Dart 3)</span>
+
+<span class="cm">// Record: retours multiples typés</span>
+(<span class="t">double</span>, <span class="t">double</span>, <span class="t">String</span>) <span class="f">analyzeList</span>(<span class="t">List</span>&lt;<span class="t">int</span>&gt; <span class="v">data</span>) {
+  <span class="k">final</span> <span class="v">min</span> = <span class="v">data</span>.<span class="f">reduce</span>((<span class="v">a</span>, <span class="v">b</span>) =&gt; <span class="v">a</span> &lt; <span class="v">b</span> ? <span class="v">a</span> : <span class="v">b</span>).<span class="f">toDouble</span>();
+  <span class="k">final</span> <span class="v">max</span> = <span class="v">data</span>.<span class="f">reduce</span>((<span class="v">a</span>, <span class="v">b</span>) =&gt; <span class="v">a</span> &gt; <span class="v">b</span> ? <span class="v">a</span> : <span class="v">b</span>).<span class="f">toDouble</span>();
+  <span class="k">final</span> <span class="v">avg</span> = <span class="v">data</span>.<span class="f">fold</span>(<span class="n">0</span>, (<span class="v">s</span>, <span class="v">e</span>) =&gt; <span class="v">s</span> + <span class="v">e</span>) / <span class="v">data</span>.<span class="v">length</span>;
+  <span class="k">final</span> <span class="v">label</span> = <span class="k">switch</span> (<span class="v">avg</span>) {
+    &gt;= <span class="n">80</span> =&gt; <span class="s">'Excellent'</span>,
+    &gt;= <span class="n">50</span> =&gt; <span class="s">'Bien'</span>,
+    _ =&gt; <span class="s">'À améliorer'</span>
+  };
+  <span class="k">return</span> (<span class="v">min</span>, <span class="v">max</span>, <span class="v">label</span>);
+}
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="k">final</span> <span class="v">scores</span> = [<span class="n">92</span>, <span class="n">78</span>, <span class="n">85</span>, <span class="n">94</span>, <span class="n">67</span>];
+  <span class="k">final</span> (<span class="v">min</span>, <span class="v">max</span>, <span class="v">label</span>) = <span class="f">analyzeList</span>(<span class="v">scores</span>);
+  <span class="f">print</span>(<span class="s">'Min: <span class="pu">$</span><span class="v">min</span> | Max: <span class="pu">$</span><span class="v">max</span>'</span>);
+  <span class="f">print</span>(<span class="s">'Résultat: <span class="pu">$</span><span class="v">label</span>'</span>);
+}`,
+    out:`Min: 67.0 | Max: 94.0
+Résultat: Excellent`
+  },
+  {
+    t:'05 · Async/Await',desc:'Programmation asynchrone',
+    code:`<span class="cm">// Async, await et gestion d'erreurs</span>
+<span class="k">import</span> <span class="s">'dart:async'</span>;
+
+<span class="t">Future</span>&lt;<span class="t">Map</span>&lt;<span class="t">String</span>, <span class="k">dynamic</span>&gt;&gt; <span class="f">fetchUser</span>(<span class="t">int</span> <span class="v">id</span>) <span class="k">async</span> {
+  <span class="cm">// Simule une requête API</span>
+  <span class="k">await</span> <span class="t">Future</span>.<span class="f">delayed</span>(<span class="t">Duration</span>(<span class="v">milliseconds:</span> <span class="n">300</span>));
+
+  <span class="k">if</span> (<span class="v">id</span> &lt;= <span class="n">0</span>) <span class="k">throw</span> <span class="t">ArgumentError</span>(<span class="s">'ID invalide'</span>);
+
+  <span class="k">return</span> {<span class="s">'id'</span>: <span class="v">id</span>, <span class="s">'name'</span>: <span class="s">'Alice'</span>, <span class="s">'level'</span>: <span class="s">'Expert'</span>};
+}
+
+<span class="t">Future</span>&lt;<span class="k">void</span>&gt; <span class="f">main</span>() <span class="k">async</span> {
+  <span class="f">print</span>(<span class="s">'🔄 Chargement...'</span>);
+
+  <span class="k">try</span> {
+    <span class="k">final</span> [<span class="v">u1</span>, <span class="v">u2</span>] = <span class="k">await</span> <span class="t">Future</span>.<span class="f">wait</span>([
+      <span class="f">fetchUser</span>(<span class="n">1</span>),
+      <span class="f">fetchUser</span>(<span class="n">2</span>),
+    ]);
+    <span class="f">print</span>(<span class="s">'✅ <span class="pu">${</span><span class="v">u1</span>[<span class="s">'name'</span>]<span class="pu">}</span> &amp; <span class="pu">${</span><span class="v">u2</span>[<span class="s">'name'</span>]<span class="pu">}</span> chargés!'</span>);
+    <span class="f">print</span>(<span class="s">'Niveau: <span class="pu">${</span><span class="v">u1</span>[<span class="s">'level'</span>]<span class="pu">}</span>'</span>);
+  } <span class="k">catch</span> (<span class="v">e</span>) {
+    <span class="f">print</span>(<span class="s">'❌ Erreur: <span class="pu">$</span><span class="v">e</span>'</span>);
+  }
+}`,
+    out:`🔄 Chargement...
+✅ Alice & Alice chargés!
+Niveau: Expert`
+  }
+];
+
+const FEATURES = [
+  {ico:'🎯',t:'100% Pratique',d:'Chaque concept est immédiatement appliqué dans un exercice. Pas de théorie sans pratique — vous codez dès la première leçon.'},
+  {ico:'📐',t:'Structuré & Progressif',d:'Les 6 modules suivent une progression rigoureuse. Chaque exercice s\'appuie sur les précédents, sans jamais sauter une étape.'},
+  {ico:'🔬',t:'Dart 3 & Null Safety',d:'Null Safety dès le module 1, records et pattern matching Dart 3 au module 4. Vous apprenez Dart tel qu\'il est aujourd\'hui.'},
+  {ico:'⚡',t:'Exercices Corrigés',d:'Chaque exercice dispose d\'une correction détaillée avec explications, alternatives et les pièges courants à éviter.'},
+  {ico:'🏗',t:'Projets Réels',d:'Chaque module se conclut sur un mini-projet intégrant toutes les compétences acquises. Le module 6 : une CLI App complète.'},
+  {ico:'🔄',t:'Mises à Jour Incluses',d:'Le cours évolue avec Dart. Toutes les mises à jour futures (Dart 3.x, nouvelles features) sont incluses à vie.'},
+];
+
+const REVIEWS = [
+  {av:'bg:#0EA5E9',initials:'TM',stars:'★★★★★',txt:'En 3 semaines j\'ai pu contribuer sur un repo Flutter professionnel. La progression est parfaite, jamais largué mais toujours challengé.',name:'Thomas M.',role:'Dev Web → Dev Flutter'},
+  {av:'bg:#F97316',initials:'SF',stars:'★★★★★',txt:'Les exercices sur les Streams et Isolates m\'ont vraiment ouvert les yeux. Je comprends enfin comment Flutter fonctionne under the hood.',name:'Sophie F.',role:'Développeuse Android'},
+  {av:'bg:#10B981',initials:'KD',stars:'★★★★★',txt:'Le module POO est une masterclass. Mixins, extensions, sealed classes — tout est expliqué avec une clarté remarquable. Bravo !',name:'Karim D.',role:'Étudiant en informatique'},
+];
+
+/* ===================== RENDER ===================== */
+
+function buildRoad() {
+  const g = document.getElementById('roadGrid');
+  g.innerHTML = ROAD.map(r => `
+    <div class="road-card ${r.c} rv">
+      <div class="road-num">Module ${r.num}</div>
+      <div class="road-title">${r.title}</div>
+      <div class="road-sub">${r.sub}</div>
+      <span class="road-level ${r.lv}">● ${r.lvt}</span>
+      <div class="road-excount"><strong>${r.ex} exercices</strong></div>
+    </div>`).join('');
+}
+
+function buildCurriculum() {
+  const g = document.getElementById('currGrid');
+  g.innerHTML = MODULES.map(m => `
+    <div class="mod-card rv" id="mod${m.id}">
+      <div class="mod-hd" onclick="toggleMod(${m.id})">
+        <div class="mod-ico ${m.mc}">${m.ico}</div>
+        <div class="mod-info">
+          <div class="mod-num">${m.num}</div>
+          <div class="mod-name">${m.name}</div>
+          <div class="mod-tags">${m.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="mod-ft">
+        <div class="mod-counts">
+          <div class="ci"><strong>${m.lessons}</strong>&nbsp;leçons</div>
+          <div class="ci"><strong>${m.exercises}</strong>&nbsp;exercices</div>
+          <div class="ci" style="font-family:var(--fm);font-size:.68rem;color:var(--pr)">${m.exRange}</div>
+        </div>
+        <button class="xbtn" onclick="toggleMod(${m.id})">▾</button>
+      </div>
+      <div class="mod-body">
+        <ul class="lesson-list">
+          ${m.items.map(item => {
+            if(item.t==='l') return `<li class="li"><span class="li-num">—</span><span class="li-name">📖 ${item.n}</span><span class="li-type ty-l">Leçon</span></li>`;
+            if(item.t==='e') return `<li class="li"><span class="li-num">#${String(item.x).padStart(2,'0')}</span><span class="li-name">⚡ ${item.n}</span><span class="li-type ty-e">Exercice</span></li>`;
+            return `<li class="li" style="border-left:2px solid var(--ok)"><span class="li-num">★</span><span class="li-name">🏗 ${item.n}</span><span class="li-type ty-p">Projet</span></li>`;
+          }).join('')}
+        </ul>
+      </div>
+    </div>`).join('');
+}
+
+function toggleMod(id) {
+  const c = document.getElementById('mod'+id);
+  c.classList.toggle('open');
+}
+
+function buildPreview() {
+  const steps = document.getElementById('prevSteps');
+  const tabs = document.getElementById('edTabs');
+  steps.innerHTML = PREVIEWS.map((p,i) => `
+    <div class="pstep ${i===0?'act':''}" onclick="selectTab(${i})">
+      <div class="pstep-n">${i+1}</div>
+      <div><div class="pstep-t">${p.t}</div><div class="pstep-d">${p.desc}</div></div>
+    </div>`).join('');
+  tabs.innerHTML = PREVIEWS.map((p,i) => `
+    <div class="etab ${i===0?'act':''}" onclick="selectTab(${i})">${p.t}</div>`).join('');
+  selectTab(0);
+}
+
+function selectTab(i) {
+  document.querySelectorAll('.pstep').forEach((el,j) => el.classList.toggle('act',j===i));
+  document.querySelectorAll('.etab').forEach((el,j) => el.classList.toggle('act',j===i));
+  document.getElementById('edPre').innerHTML = PREVIEWS[i].code;
+  document.getElementById('edOut').textContent = PREVIEWS[i].out;
+}
+
+function buildFeatures() {
+  document.getElementById('featGrid').innerHTML = FEATURES.map(f => `
+    <div class="feat-card rv">
+      <span class="feat-ico">${f.ico}</span>
+      <div class="feat-t">${f.t}</div>
+      <div class="feat-d">${f.d}</div>
+    </div>`).join('');
+}
+
+function buildReviews() {
+  document.getElementById('revGrid').innerHTML = REVIEWS.map(r => `
+    <div class="rev-card rv">
+      <div class="rev-stars">${r.stars}</div>
+      <p class="rev-text">"${r.txt}"</p>
+      <div class="rev-auth">
+        <div class="rev-av" style="${r.av}">${r.initials}</div>
+        <div><div class="rev-n">${r.name}</div><div class="rev-r">${r.role}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ===================== TERMINAL ANIMATION ===================== */
+
+const TERM_LINES = [
+  ['<span class="cm">// dart_master.dart — Bienvenue! 🎯</span>',''],
+  ['<span class="k">void</span> <span class="f">main</span>() {',''],
+  ['  <span class="k">final</span> <span class="v">course</span> = <span class="t">DartMaster</span>(',''],
+  ['    <span class="v">modules:</span> <span class="n">6</span>, <span class="v">exercises:</span> <span class="n">100</span>,',''],
+  ['  );',''],
+  ['  <span class="v">course</span>.<span class="f">start</span>();',''],
+  ['}',''],
+  ['',''],
+  ['<span class="k">class</span> <span class="t">DartMaster</span> {',''],
+  ['  <span class="k">final int</span> <span class="v">modules</span>, <span class="v">exercises</span>;',''],
+  ['  <span class="t">DartMaster</span>({<span class="k">required this</span>.<span class="v">modules</span>,',''],
+  ['            <span class="k">required this</span>.<span class="v">exercises</span>});',''],
+  ['  <span class="k">void</span> <span class="f">start</span>() {',''],
+  ['    <span class="f">print</span>(<span class="s">"🎯 Prêt à maîtriser Dart?"</span>);',''],
+  ['    <span class="f">print</span>(<span class="s">"📚 <span class="pu">${</span><span class="v">exercises</span><span class="pu">}</span> exercices vous attendent"</span>);',''],
+  ['  }',''],
+  ['}',''],
+];
+
+const TERM_OUTS = [
+  '🎯 Prêt à maîtriser Dart?',
+  '📚 100 exercices vous attendent'
+];
+
+function animateTerminal() {
+  const body = document.getElementById('termLines');
+  const outEl = document.getElementById('termOut');
+  body.innerHTML = '';
+  TERM_LINES.forEach((line, i) => {
+    const row = document.createElement('div');
+    row.className = 'tl';
+    row.innerHTML = `<span class="ln" style="animation-delay:${i*80}ms;animation-fill-mode:both">${i+1}</span><span class="lc" style="animation-delay:${i*80}ms;animation-fill-mode:both">${line[0]}</span>`;
+    body.appendChild(row);
+  });
+  const lastDelay = TERM_LINES.length * 80 + 200;
+  setTimeout(() => {
+    outEl.innerHTML = '';
+    TERM_OUTS.forEach((o, i) => {
+      setTimeout(() => {
+        outEl.innerHTML += (i > 0 ? '\n' : '') + o;
+      }, i * 300);
+    });
+  }, lastDelay);
+}
+
+/* ===================== SCROLL & COUNTERS ===================== */
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('vis');
+      if(e.target.dataset.target) animateCount(e.target);
+    }
+  });
+}, {threshold:.15});
+
+function animateCount(el) {
+  const target = +el.dataset.target;
+  let current = 0;
+  const step = target / 50;
+  const t = setInterval(() => {
+    current = Math.min(current + Math.ceil(step), target);
+    el.textContent = current + (target >= 40 && target < 100 ? 'h+' : target === 8 ? ' ans' : '');
+    if(current >= target) clearInterval(t);
+  }, 28);
+}
+
+function setupReveal() {
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  document.querySelectorAll('[data-target]').forEach(el => io.observe(el));
+}
+
+/* ===================== PROGRESS & SCROLLTOP ===================== */
+
+const prog = document.getElementById('prog');
+const stb = document.getElementById('stb');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  prog.style.width = pct + '%';
+  stb.classList.toggle('show', h.scrollTop > 400);
+});
+
+/* ===================== INIT ===================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildRoad();
+  buildCurriculum();
+  buildPreview();
+  buildFeatures();
+  buildReviews();
+  animateTerminal();
+  setupReveal();
+});
+</script>
+</body>
+</html>
