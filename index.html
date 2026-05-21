@@ -1,7 +1,42 @@
-import { useState, useRef, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DartMaster Pro — Cours Interactif</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#05080F;color:#E2E8F0;overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+textarea{font-family:'JetBrains Mono',monospace!important}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spin2{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useRef,useEffect,useCallback}=React;
 
 const C={bg:'#05080F',s1:'#080C18',s2:'#0D1424',bdr:'rgba(255,255,255,.06)',bdrB:'rgba(14,165,233,.25)',pr:'#0EA5E9',prD:'rgba(14,165,233,.12)',ok:'#10B981',ac:'#F97316',pu:'#8B5CF6',pk:'#EC4899',ye:'#F59E0B',tx:'#E2E8F0',tx2:'#94A3B8',tx3:'#475569',code:'#0D1117'};
-const MODS=[{id:1,n:'Fondamentaux',ico:'🔧',c:C.pr},{id:2,n:'Collections & Génériques',ico:'📦',c:C.ac},{id:3,n:'Prog. Orientée Objet',ico:'🏗',c:C.ok},{id:4,n:'Dart Avancé & Fonctionnel',ico:'⚡',c:C.pu},{id:5,n:'Async, Streams & Isolates',ico:'🔄',c:C.pk},{id:6,n:'Expert & Écosystème',ico:'🏆',c:C.ye}];
+
+const MODS=[
+  {id:1,n:'Fondamentaux',ico:'🔧',c:C.pr},
+  {id:2,n:'Collections & Génériques',ico:'📦',c:C.ac},
+  {id:3,n:'Prog. Orientée Objet',ico:'🏗',c:C.ok},
+  {id:4,n:'Dart Avancé & Fonctionnel',ico:'⚡',c:C.pu},
+  {id:5,n:'Async, Streams & Isolates',ico:'🔄',c:C.pk},
+  {id:6,n:'Expert & Écosystème',ico:'🏆',c:C.ye},
+];
+
 const EXS=[
   {id:1,mod:1,t:"Déclarer des variables typées",k:["var","final","const","String","int","double","bool"]},
   {id:2,mod:1,t:"Conversions de types",k:["toString()","int.parse()","double.parse()","toInt()"]},
@@ -11,7 +46,7 @@ const EXS=[
   {id:6,mod:1,t:"Système de notation scolaire (A→F)",k:["if","else if","switch","conditions"]},
   {id:7,mod:1,t:"Calculateur d'IMC avec catégorie",k:["double","if-else","catégories"]},
   {id:8,mod:1,t:"Table de multiplication formatée",k:["for","boucles imbriquées","padLeft"]},
-  {id:9,mod:1,t:"Suite de Fibonacci jusqu'à N",k:["while","List","sequence","conditions d'arrêt"]},
+  {id:9,mod:1,t:"Suite de Fibonacci jusqu'à N",k:["while","List","sequence"]},
   {id:10,mod:1,t:"FizzBuzz avec diviseurs personnalisables",k:["for","%","modulo","paramètres nommés"]},
   {id:11,mod:1,t:"Vérificateur de nombres premiers",k:["for","bool","return","sqrt","break"]},
   {id:12,mod:1,t:"Palindrome, anagramme et factorielle",k:["String","split","reversed","Set","récursion"]},
@@ -23,8 +58,8 @@ const EXS=[
   {id:18,mod:2,t:"Collections avec spread et collection-if",k:["spread ...","collection if","collection for"]},
   {id:19,mod:2,t:"Pipeline fonctionnel sur Iterable",k:["map()","where()","reduce()","fold()"]},
   {id:20,mod:2,t:"Stack<T> générique maison",k:["generics","class","List<T>","push","pop","peek"]},
-  {id:21,mod:2,t:"Pair<A,B> et Triple<A,B,C>",k:["generics","class","toString()","hashCode","equality"]},
-  {id:22,mod:2,t:"File d'attente avec priorités",k:["Queue","Comparable","sort","priority","generics"]},
+  {id:21,mod:2,t:"Pair<A,B> et Triple<A,B,C>",k:["generics","class","toString()","hashCode"]},
+  {id:22,mod:2,t:"File d'attente avec priorités",k:["Queue","Comparable","sort","priority"]},
   {id:23,mod:2,t:"Algorithmes: zip, groupBy, flatten",k:["binary search","zip","groupBy","flatten"]},
   {id:24,mod:3,t:"Classe Personne avec constructeurs multiples",k:["class","constructor","named constructor"]},
   {id:25,mod:3,t:"Singleton avec factory constructor",k:["factory","static","private","singleton"]},
@@ -37,9 +72,9 @@ const EXS=[
   {id:32,mod:3,t:"Logger mixin réutilisable",k:["mixin","on","log","DateTime","formatting"]},
   {id:33,mod:3,t:"Extensions sur String",k:["extension","String","capitalize","toSlug","isPalindrome"]},
   {id:34,mod:3,t:"Extensions sur DateTime",k:["extension","DateTime","isToday","fromNow","format"]},
-  {id:35,mod:3,t:"Enum Direction avec méthodes",k:["enum","enhanced enum","methods","properties","switch"]},
+  {id:35,mod:3,t:"Enum Direction avec méthodes",k:["enum","enhanced enum","methods","switch"]},
   {id:36,mod:3,t:"Enum Statut de commande avec transitions",k:["enum","state machine","transitions"]},
-  {id:37,mod:3,t:"Builder pattern avec cascade",k:["cascade ..","builder","method chaining","fluent"]},
+  {id:37,mod:3,t:"Builder pattern avec cascade",k:["cascade ..","builder","method chaining"]},
   {id:38,mod:3,t:"Projet: Jeu de Bataille complet",k:["class","enum","List","OOP","game logic"]},
   {id:39,mod:3,t:"Design Pattern Observer",k:["observer","listener","callback","List<Function>"]},
   {id:40,mod:3,t:"Design Pattern Strategy",k:["strategy","interface","implements","algorithm"]},
@@ -49,63 +84,63 @@ const EXS=[
   {id:44,mod:4,t:"Memoization et fonctions pures",k:["memoize","Map cache","pure function","closure"]},
   {id:45,mod:4,t:"Pipeline de traitement fonctionnel",k:["map()","where()","fold()","chaining"]},
   {id:46,mod:4,t:"groupBy, countBy, partitionBy",k:["groupBy","countBy","partition","Map","fold"]},
-  {id:47,mod:4,t:"Parser JSON avec Pattern Matching Dart 3",k:["switch","patterns","Map pattern","type test"]},
+  {id:47,mod:4,t:"Parser JSON avec Pattern Matching Dart 3",k:["switch","patterns","Map pattern"]},
   {id:48,mod:4,t:"Machine à états avec switch expression",k:["switch expression","sealed","state machine"]},
-  {id:49,mod:4,t:"Multiple returns avec Records Dart 3",k:["records","(T1,T2)","named records","destructuring"]},
+  {id:49,mod:4,t:"Multiple returns avec Records Dart 3",k:["records","(T1,T2)","named records"]},
   {id:50,mod:4,t:"Déstructuration de records imbriqués",k:["records","nested","pattern matching"]},
-  {id:51,mod:4,t:"Result<T,E> avec sealed classes",k:["sealed","Result","Success","Failure","switch exhaustif"]},
+  {id:51,mod:4,t:"Result<T,E> avec sealed classes",k:["sealed","Result","Success","Failure"]},
   {id:52,mod:4,t:"Shape union type avec sealed",k:["sealed class","Circle","Rectangle","Triangle"]},
-  {id:53,mod:4,t:"Validation avec exceptions typées",k:["custom exception","try/catch/finally","chain"]},
+  {id:53,mod:4,t:"Validation avec exceptions typées",k:["custom exception","try/catch/finally"]},
   {id:54,mod:4,t:"Either monad pour erreurs",k:["Either<L,R>","Left","Right","map()","flatMap()"]},
-  {id:55,mod:4,t:"Variance dans les génériques",k:["covariance","contravariance","List<T>","bounds"]},
-  {id:56,mod:4,t:"Séquences infinies avec sync*",k:["sync*","yield","Iterable","range()","cycle()"]},
-  {id:57,mod:4,t:"Parser d'expressions arithmétiques",k:["lexer","parser","recursive descent","eval"]},
-  {id:58,mod:4,t:"Arbre de décision typé",k:["tree","recursive","sealed","Node","Branch","Leaf"]},
+  {id:55,mod:4,t:"Variance dans les génériques",k:["covariance","contravariance","List<T>"]},
+  {id:56,mod:4,t:"Séquences infinies avec sync*",k:["sync*","yield","Iterable","range()"]},
+  {id:57,mod:4,t:"Parser d'expressions arithmétiques",k:["lexer","parser","recursive descent"]},
+  {id:58,mod:4,t:"Arbre de décision typé",k:["tree","recursive","sealed","Node","Leaf"]},
   {id:59,mod:4,t:"Option<T> type sûr",k:["Option<T>","Some","None","map()","getOrElse()"]},
-  {id:60,mod:4,t:"Mini-interpréteur de commandes",k:["Command pattern","Map<String,Function>","dispatch"]},
+  {id:60,mod:4,t:"Mini-interpréteur de commandes",k:["Command pattern","Map<String,Function>"]},
   {id:61,mod:5,t:"Client HTTP simulé avec retry",k:["Future","async","await","retry","backoff"]},
-  {id:62,mod:5,t:"Future.wait et Future.any",k:["Future.wait","Future.any","List<Future>","parallel"]},
-  {id:63,mod:5,t:"Timeout et annulation de Futures",k:["Future.timeout","TimeoutException","catchError"]},
-  {id:64,mod:5,t:"Stream de températures avec alertes",k:["Stream","StreamController","listen","where"]},
-  {id:65,mod:5,t:"Debounce et throttle sur Stream",k:["Stream","debounce","throttle","delay","distinct"]},
-  {id:66,mod:5,t:"Merge et zip de Streams multiples",k:["StreamController","merge","zip","broadcast"]},
-  {id:67,mod:5,t:"EventBus maison avec StreamController",k:["StreamController","broadcast","emit","listen"]},
-  {id:68,mod:5,t:"Real-time search avec debounce",k:["StreamController","debounce","async","filter"]},
+  {id:62,mod:5,t:"Future.wait et Future.any",k:["Future.wait","Future.any","List<Future>"]},
+  {id:63,mod:5,t:"Timeout et annulation de Futures",k:["Future.timeout","TimeoutException"]},
+  {id:64,mod:5,t:"Stream de températures avec alertes",k:["Stream","StreamController","listen"]},
+  {id:65,mod:5,t:"Debounce et throttle sur Stream",k:["Stream","debounce","throttle","delay"]},
+  {id:66,mod:5,t:"Merge et zip de Streams multiples",k:["StreamController","merge","zip"]},
+  {id:67,mod:5,t:"EventBus maison avec StreamController",k:["StreamController","broadcast","emit"]},
+  {id:68,mod:5,t:"Real-time search avec debounce",k:["StreamController","debounce","async"]},
   {id:69,mod:5,t:"Pagination infinie avec async*",k:["async*","yield","generator","pagination"]},
   {id:70,mod:5,t:"Simulation de Server-Sent Events",k:["async*","yield","Stream","periodic"]},
   {id:71,mod:5,t:"Confirmation dialog avec Completer",k:["Completer<T>","Future","complete()"]},
   {id:72,mod:5,t:"Calcul intensif dans un Isolate",k:["Isolate","spawn","SendPort","ReceivePort"]},
-  {id:73,mod:5,t:"Communication bidirectionnelle Isolates",k:["Isolate","SendPort","ReceivePort","bidirectionnel"]},
-  {id:74,mod:5,t:"Zone personnalisée pour logging async",k:["Zone","runZoned","zoneValues","runGuarded"]},
-  {id:75,mod:5,t:"Traitement fichier CSV en streaming",k:["Stream","LineSplitter","transform","pipe"]},
-  {id:76,mod:5,t:"Pool d'Isolates",k:["Isolate","pool","queue","load balancing","worker"]},
-  {id:77,mod:5,t:"Pipeline ETL asynchrone complet",k:["async*","Stream","transform","await","ETL"]},
-  {id:78,mod:6,t:"CLI parseur JSON et CSV",k:["dart:io","stdin","File","dart:convert","JSON"]},
-  {id:79,mod:6,t:"Serveur HTTP bas niveau",k:["HttpServer","HttpRequest","HttpResponse","routes"]},
-  {id:80,mod:6,t:"Watcher de fichiers",k:["Directory","watch()","FileSystemEvent","Stream"]},
+  {id:73,mod:5,t:"Communication bidirectionnelle Isolates",k:["Isolate","SendPort","ReceivePort"]},
+  {id:74,mod:5,t:"Zone personnalisée pour logging async",k:["Zone","runZoned","zoneValues"]},
+  {id:75,mod:5,t:"Traitement fichier CSV en streaming",k:["Stream","LineSplitter","transform"]},
+  {id:76,mod:5,t:"Pool d'Isolates",k:["Isolate","pool","queue","load balancing"]},
+  {id:77,mod:5,t:"Pipeline ETL asynchrone complet",k:["async*","Stream","transform","ETL"]},
+  {id:78,mod:6,t:"CLI parseur JSON et CSV",k:["dart:io","stdin","File","dart:convert"]},
+  {id:79,mod:6,t:"Serveur HTTP bas niveau",k:["HttpServer","HttpRequest","HttpResponse"]},
+  {id:80,mod:6,t:"Watcher de fichiers",k:["Directory","watch()","FileSystemEvent"]},
   {id:81,mod:6,t:"Créer un package de validation",k:["package","library","exports","validators"]},
   {id:82,mod:6,t:"API client typé avec http",k:["http","json_serializable","fromJson","toJson"]},
-  {id:83,mod:6,t:"Suite de tests unitaires complète",k:["test","expect","group","setUp","tearDown"]},
+  {id:83,mod:6,t:"Suite de tests unitaires complète",k:["test","expect","group","setUp"]},
   {id:84,mod:6,t:"TDD: construire par les tests",k:["TDD","red-green-refactor","test","expect"]},
   {id:85,mod:6,t:"Tests async avec FakeAsync",k:["FakeAsync","pump","advance","async testing"]},
-  {id:86,mod:6,t:"Dart FFI: appeler une lib C",k:["dart:ffi","DynamicLibrary","lookupFunction","Pointer"]},
-  {id:87,mod:6,t:"Benchmark et optimisation AOT",k:["Stopwatch","benchmark","const","final","AOT"]},
-  {id:88,mod:6,t:"Détecter une fuite mémoire",k:["WeakReference","Expando","GC","memory","leaks"]},
+  {id:86,mod:6,t:"Dart FFI: appeler une lib C",k:["dart:ffi","DynamicLibrary","lookupFunction"]},
+  {id:87,mod:6,t:"Benchmark et optimisation AOT",k:["Stopwatch","benchmark","const","AOT"]},
+  {id:88,mod:6,t:"Détecter une fuite mémoire",k:["WeakReference","Expando","GC","memory"]},
   {id:89,mod:6,t:"Benchmark de structures de données",k:["Stopwatch","List","Map","Set","performance"]},
   {id:90,mod:6,t:"Générateur de code avec source_gen",k:["source_gen","Builder","buildExtensions"]},
   {id:91,mod:6,t:"Annotations et reflection-like",k:["annotation","@","metadata","reflection"]},
   {id:92,mod:6,t:"Architecture hexagonale",k:["ports","adapters","domain","infrastructure"]},
   {id:93,mod:6,t:"Mini-ORM avec requêtes typées",k:["generics","Map","type-safe","query builder"]},
   {id:94,mod:6,t:"Plugin système avec Process",k:["dart:io","Process","Platform","shell"]},
-  {id:95,mod:6,t:"WebSocket client dart:io",k:["WebSocket","dart:io","connect","listen","send"]},
+  {id:95,mod:6,t:"WebSocket client dart:io",k:["WebSocket","dart:io","connect","listen"]},
   {id:96,mod:6,t:"Isolate compute pour JSON lourd",k:["Isolate","compute","json","background"]},
-  {id:97,mod:6,t:"Système de routing typé",k:["generics","Map<String,Handler>","type-safe","router"]},
+  {id:97,mod:6,t:"Système de routing typé",k:["generics","Map<String,Handler>","type-safe"]},
   {id:98,mod:6,t:"Mini parser de Markdown",k:["RegExp","String","parser","tokens","render"]},
-  {id:99,mod:6,t:"Mini-ORM avec relations JOIN",k:["generics","join","foreign key","type-safe","ORM"]},
-  {id:100,mod:6,t:"Projet Final: CLI Framework complet",k:["dart:io","async","generics","testing","architecture"]},
+  {id:99,mod:6,t:"Mini-ORM avec relations JOIN",k:["generics","join","foreign key","ORM"]},
+  {id:100,mod:6,t:"Projet Final: CLI Framework complet",k:["dart:io","async","generics","testing"]},
 ];
 
-export default function DartCourse() {
+function App() {
   const [sel,setSel]=useState(null);
   const [cache,setCache]=useState({});
   const [codes,setCodes]=useState({});
@@ -118,21 +153,12 @@ export default function DartCourse() {
   const [showHint,setShowHint]=useState(false);
   const [genErr,setGenErr]=useState(false);
 
-  useEffect(()=>{
-    const l=document.createElement('link');
-    l.rel='stylesheet';
-    l.href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&display=swap';
-    document.head.appendChild(l);
-    document.body.style.margin='0';
-  },[]);
-
   const curCode=sel?(codes[sel.id]??''):'';
-  const setCurCode=v=>{ if(sel) setCodes(p=>({...p,[sel.id]:v})); };
+  const setCurCode=v=>{if(sel)setCodes(p=>({...p,[sel.id]:v}));};
 
   async function apiCall(sys,msg){
     const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:msg}]})
     });
     const d=await r.json();
@@ -141,9 +167,9 @@ export default function DartCourse() {
   }
 
   async function pick(ex){
-    setSel(ex); setFb(null); setShowHint(false); setHintN(0); setGenErr(false);
+    setSel(ex);setFb(null);setShowHint(false);setHintN(0);setGenErr(false);
     if(cache[ex.id]){
-      if(!codes[ex.id]) setCodes(p=>({...p,[ex.id]:cache[ex.id].starterCode}));
+      if(!codes[ex.id])setCodes(p=>({...p,[ex.id]:cache[ex.id].starterCode}));
       return;
     }
     setGenBusy(true);
@@ -151,85 +177,79 @@ export default function DartCourse() {
       const mod=MODS.find(m=>m.id===ex.mod);
       const diff=ex.mod<=2?'débutant':ex.mod<=4?'intermédiaire':ex.mod<=5?'avancé':'expert';
       const data=await apiCall(
-        'Tu es un instructeur expert Dart 3 (Google Developer Expert). Génère du contenu en français. Réponds UNIQUEMENT avec du JSON valide, sans markdown ni backticks.',
-        `Génère le contenu pour l'exercice Dart #${ex.id}/100: "${ex.t}"
-Module: ${mod.n} | Concepts: ${ex.k.join(', ')} | Difficulté: ${diff}
-
-JSON (respecte EXACTEMENT cette structure):
-{"description":"2-3 phrases claires sur l'exercice","objectives":["Objectif 1","Objectif 2","Objectif 3"],"starterCode":"// Exercice ${ex.id}: ${ex.t}\\nvoid main() {\\n  // TODO: votre solution ici\\n}","hints":["Indice general","Indice plus précis","Quasi-solution"],"difficulty":"${diff}"}`
+        'Tu es un instructeur expert Dart 3. Génère du contenu pédagogique en français. Réponds UNIQUEMENT avec du JSON valide, sans markdown ni backticks.',
+        `Exercice #${ex.id}/100: "${ex.t}" | Module: ${mod.n} | Concepts: ${ex.k.join(', ')} | Difficulté: ${diff}
+JSON:{"description":"2-3 phrases sur l'exercice","objectives":["Objectif 1","Objectif 2","Objectif 3"],"starterCode":"// Exercice ${ex.id}: ${ex.t}\\nvoid main() {\\n  // TODO: votre code ici\\n}","hints":["Indice général","Indice précis","Quasi-solution"],"difficulty":"${diff}"}`
       );
       setCache(p=>({...p,[ex.id]:data}));
       setCodes(p=>({...p,[ex.id]:p[ex.id]??data.starterCode}));
-    }catch(e){ setGenErr(true); }
+    }catch(e){setGenErr(true);}
     setGenBusy(false);
   }
 
   async function check(){
-    if(!sel||!curCode.trim()||!cache[sel.id]||chkBusy) return;
-    setChkBusy(true); setFb(null);
+    if(!sel||!curCode.trim()||!cache[sel.id]||chkBusy)return;
+    setChkBusy(true);setFb(null);
     try{
       const c=cache[sel.id];
       const res=await apiCall(
-        'Tu es un correcteur expert Dart 3 bienveillant. Réponds UNIQUEMENT avec du JSON valide, sans markdown ni backticks.',
-        `Évalue ce code Dart pour l'exercice #${sel.id}: "${sel.t}"
-Objectifs: ${c.objectives?.join(' | ')}
-Code étudiant:
-\`\`\`dart
-${curCode}
-\`\`\`
-JSON:
-{"passed":true,"score":85,"summary":"1 phrase","positives":["bien 1","bien 2"],"improvements":["améliorer 1","améliorer 2"],"tip":"conseil pro 1 phrase"}`
+        'Tu es un correcteur expert Dart bienveillant. Réponds UNIQUEMENT avec du JSON valide, sans markdown ni backticks.',
+        `Exercice #${sel.id}: "${sel.t}" | Objectifs: ${c.objectives?.join(' | ')}
+Code:\`\`\`dart\n${curCode}\n\`\`\`
+JSON:{"passed":true,"score":85,"summary":"1 phrase","positives":["bien 1","bien 2"],"improvements":["améliorer 1"],"tip":"conseil pro"}`
       );
       setFb(res);
-      if(res.passed) setDone(p=>new Set([...p,sel.id]));
-    }catch(e){ console.error(e); }
+      if(res.passed)setDone(p=>new Set([...p,sel.id]));
+    }catch(e){}
     setChkBusy(false);
   }
 
   const selIdx=EXS.findIndex(e=>e.id===sel?.id);
   const prevEx=selIdx>0?EXS[selIdx-1]:null;
   const nextEx=selIdx<EXS.length-1?EXS[selIdx+1]:null;
-  const pct=done.size;
 
-  return(
-    <div style={{display:'flex',height:'100vh',fontFamily:"'Outfit',sans-serif",background:C.bg,color:C.tx,overflow:'hidden'}}>
+  return (
+    <div style={{display:'flex',height:'100vh',background:C.bg,color:C.tx,overflow:'hidden'}}>
 
-      {/* ── SIDEBAR ── */}
-      <aside style={{width:268,background:C.s1,borderRight:`1px solid ${C.bdr}`,display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
-        <div style={{padding:'.875rem 1rem',borderBottom:`1px solid ${C.bdr}`,display:'flex',alignItems:'center',gap:'.5rem'}}>
-          <div style={{width:28,height:28,background:`linear-gradient(135deg,${C.pr},${C.ac})`,borderRadius:7,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:'#000',fontSize:'.75rem',flexShrink:0}}>D</div>
+      {/* SIDEBAR */}
+      <aside style={{width:260,background:C.s1,borderRight:`1px solid ${C.bdr}`,display:'flex',flexDirection:'column',overflow:'hidden',flexShrink:0}}>
+        {/* Logo */}
+        <div style={{padding:'.8rem 1rem',borderBottom:`1px solid ${C.bdr}`,display:'flex',alignItems:'center',gap:'.5rem'}}>
+          <div style={{width:28,height:28,background:`linear-gradient(135deg,${C.pr},${C.ac})`,borderRadius:7,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:'#000',fontSize:'.75rem'}}>D</div>
           <span style={{fontWeight:700,fontSize:'.875rem'}}>Dart<span style={{color:C.pr}}>Master</span></span>
-          <span style={{marginLeft:'auto',fontFamily:"'JetBrains Mono',monospace",fontSize:'.7rem',color:C.pr,background:C.prD,padding:'.15rem .5rem',borderRadius:4}}>{pct}/100</span>
+          <span style={{marginLeft:'auto',fontFamily:"'JetBrains Mono',monospace",fontSize:'.68rem',color:C.pr,background:C.prD,padding:'.12rem .45rem',borderRadius:4}}>{done.size}/100</span>
         </div>
-        <div style={{padding:'.5rem 1rem .625rem',borderBottom:`1px solid ${C.bdr}`}}>
+        {/* Progress */}
+        <div style={{padding:'.45rem 1rem .55rem',borderBottom:`1px solid ${C.bdr}`}}>
           <div style={{height:3,background:C.bdr,borderRadius:2,overflow:'hidden'}}>
-            <div style={{height:'100%',width:`${pct}%`,background:`linear-gradient(90deg,${C.pr},${C.ac})`,borderRadius:2,transition:'.4s'}}/>
+            <div style={{height:'100%',width:`${done.size}%`,background:`linear-gradient(90deg,${C.pr},${C.ac})`,borderRadius:2,transition:'.4s'}}/>
           </div>
         </div>
-        <div style={{flex:1,overflowY:'auto',padding:'.375rem .5rem'}}>
+        {/* Modules */}
+        <div style={{flex:1,overflowY:'auto',padding:'.375rem .4rem'}}>
           {MODS.map(mod=>{
             const mExs=EXS.filter(e=>e.mod===mod.id);
             const open=openMods.has(mod.id);
             const mDone=mExs.filter(e=>done.has(e.id)).length;
-            return(
-              <div key={mod.id} style={{marginBottom:'.2rem'}}>
+            return (
+              <div key={mod.id} style={{marginBottom:'.15rem'}}>
                 <button onClick={()=>setOpenMods(p=>{const n=new Set(p);n.has(mod.id)?n.delete(mod.id):n.add(mod.id);return n;})}
-                  style={{width:'100%',display:'flex',alignItems:'center',gap:'.5rem',padding:'.5rem .625rem',background:open?C.prD:'transparent',border:`1px solid ${open?C.bdrB:'transparent'}`,borderRadius:8,color:open?C.tx:C.tx2,cursor:'pointer',fontSize:'.775rem',fontWeight:600,transition:'.2s',fontFamily:"'Outfit',sans-serif"}}>
-                  <span style={{fontSize:'.9rem'}}>{mod.ico}</span>
-                  <span style={{flex:1,textAlign:'left',fontSize:'.75rem'}}>{mod.n}</span>
+                  style={{width:'100%',display:'flex',alignItems:'center',gap:'.45rem',padding:'.48rem .6rem',background:open?C.prD:'transparent',border:`1px solid ${open?C.bdrB:'transparent'}`,borderRadius:8,color:open?C.tx:C.tx2,cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontSize:'.76rem',fontWeight:600,transition:'.2s'}}>
+                  <span>{mod.ico}</span>
+                  <span style={{flex:1,textAlign:'left',fontSize:'.74rem'}}>{mod.n}</span>
                   <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.6rem',color:mod.c}}>{mDone}/{mExs.length}</span>
-                  <span style={{color:C.tx3,fontSize:'.6rem',display:'inline-block',transform:open?'rotate(180deg)':'none',transition:'.2s'}}>▾</span>
+                  <span style={{color:C.tx3,display:'inline-block',transform:open?'rotate(180deg)':'none',transition:'.2s',fontSize:'.65rem'}}>▾</span>
                 </button>
                 {open&&(
-                  <div style={{paddingLeft:'.375rem',marginTop:'.125rem'}}>
+                  <div style={{paddingLeft:'.3rem',marginTop:'.1rem'}}>
                     {mExs.map(ex=>{
                       const isSel=sel?.id===ex.id;
                       const isDone=done.has(ex.id);
                       return(
                         <button key={ex.id} onClick={()=>pick(ex)}
-                          style={{width:'100%',display:'flex',alignItems:'center',gap:'.4rem',padding:'.375rem .625rem',background:isSel?C.prD:'transparent',border:`1px solid ${isSel?C.bdrB:'transparent'}`,borderRadius:6,color:isSel?C.tx:C.tx2,cursor:'pointer',fontSize:'.72rem',marginBottom:'.1rem',transition:'.15s',textAlign:'left',fontFamily:"'Outfit',sans-serif"}}>
-                          <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.58rem',color:isDone?C.ok:isSel?C.pr:C.tx3,minWidth:'1.75rem',flexShrink:0}}>{isDone?'✓':`#${String(ex.id).padStart(2,'0')}`}</span>
-                          <span style={{flex:1,lineHeight:1.3,fontSize:'.715rem'}}>{ex.t}</span>
+                          style={{width:'100%',display:'flex',alignItems:'center',gap:'.375rem',padding:'.35rem .575rem',background:isSel?C.prD:'transparent',border:`1px solid ${isSel?C.bdrB:'transparent'}`,borderRadius:6,color:isSel?C.tx:C.tx2,cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontSize:'.7rem',marginBottom:'.08rem',transition:'.15s',textAlign:'left'}}>
+                          <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.58rem',color:isDone?C.ok:isSel?C.pr:C.tx3,minWidth:'1.6rem',flexShrink:0}}>{isDone?'✓':`#${String(ex.id).padStart(2,'0')}`}</span>
+                          <span style={{flex:1,lineHeight:1.3}}>{ex.t}</span>
                         </button>
                       );
                     })}
@@ -241,48 +261,47 @@ JSON:
         </div>
       </aside>
 
-      {/* ── MAIN ── */}
+      {/* MAIN */}
       <main style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
         {!sel
-          ?<Welcome onStart={()=>pick(EXS[0])} done={pct}/>
-          :genBusy
-            ?<Loader msg="Génération de l'exercice par IA..."/>
-            :genErr
-              ?<ErrState onRetry={()=>pick(sel)}/>
-              :<ExView
-                  ex={sel} content={cache[sel.id]} code={curCode} setCode={setCurCode}
-                  feedback={fb} chkBusy={chkBusy} onCheck={check} done={done}
-                  showHint={showHint} hintN={hintN}
-                  onHint={()=>{setShowHint(true);setHintN(n=>Math.min(n+1,(cache[sel.id]?.hints?.length??3)-1));}}
-                  onPrev={prevEx?()=>pick(prevEx):null}
-                  onNext={nextEx?()=>pick(nextEx):null}
-                />
+          ?<Welcome onStart={()=>pick(EXS[0])} done={done.size}/>
+          :genBusy?<Loader msg="Génération de l'exercice par IA…"/>
+          :genErr?<ErrState onRetry={()=>pick(sel)}/>
+          :<ExView
+              key={sel.id}
+              ex={sel} content={cache[sel.id]} code={curCode} setCode={setCurCode}
+              feedback={fb} chkBusy={chkBusy} onCheck={check} done={done}
+              showHint={showHint} hintN={hintN}
+              onHint={()=>{setShowHint(true);setHintN(n=>Math.min(n+1,(cache[sel.id]?.hints?.length??3)-1));}}
+              onPrev={prevEx?()=>pick(prevEx):null}
+              onNext={nextEx?()=>pick(nextEx):null}
+            />
         }
       </main>
     </div>
   );
 }
 
-/* ─── WELCOME ─── */
 function Welcome({onStart,done}){
   return(
     <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:'2rem',height:'100%'}}>
-      <div style={{textAlign:'center',maxWidth:520}}>
+      <div style={{textAlign:'center',maxWidth:500}}>
         <div style={{fontSize:'3.5rem',marginBottom:'1rem'}}>🎯</div>
-        <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:'2.2rem',fontWeight:800,lineHeight:1.1,marginBottom:'1rem'}}>
+        <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:'2.1rem',fontWeight:800,lineHeight:1.1,marginBottom:1}}>
           Apprenez Dart<br/>
           <span style={{background:`linear-gradient(90deg,${C.pr},${C.ac})`,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>exercice par exercice</span>
         </h1>
-        <p style={{color:C.tx2,fontSize:'.95rem',lineHeight:1.75,marginBottom:'2rem'}}>
-          100 exercices générés par IA, avec correction instantanée et indices progressifs. Cliquez sur n'importe quel exercice dans la sidebar pour commencer.
+        <p style={{color:C.tx2,fontSize:'.92rem',lineHeight:1.75,marginBottom:'2rem',marginTop:'1rem'}}>
+          Cliquez sur un exercice dans la sidebar, codez votre solution, et obtenez une correction instantanée par IA avec score, feedback et indices.
         </p>
-        <button onClick={onStart} style={{background:`linear-gradient(135deg,${C.pr},#38BDF8)`,color:'#000',border:'none',borderRadius:10,padding:'.875rem 2.25rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'1rem',cursor:'pointer'}}>
+        <button onClick={onStart}
+          style={{background:`linear-gradient(135deg,${C.pr},#38BDF8)`,color:'#000',border:'none',borderRadius:10,padding:'.875rem 2.25rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'1rem',cursor:'pointer'}}>
           Commencer — Exercice #01 →
         </button>
         <div style={{display:'flex',gap:'2rem',justifyContent:'center',marginTop:'2.5rem'}}>
           {[['100','Exercices'],['6','Modules'],['IA','Correction'],['∞','Indices']].map(([v,l])=>(
             <div key={l}>
-              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'1.5rem',fontWeight:600,color:C.pr}}>{v}</div>
+              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'1.4rem',fontWeight:600,color:C.pr}}>{v}</div>
               <div style={{fontSize:'.65rem',color:C.tx3,textTransform:'uppercase',letterSpacing:'.06em'}}>{l}</div>
             </div>
           ))}
@@ -292,117 +311,109 @@ function Welcome({onStart,done}){
   );
 }
 
-/* ─── LOADER ─── */
 function Loader({msg}){
   return(
     <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'1rem',height:'100%'}}>
-      <style>{`@keyframes sp{to{transform:rotate(360deg)}}`}</style>
-      <div style={{width:38,height:38,border:`3px solid ${C.bdr}`,borderTopColor:C.pr,borderRadius:'50%',animation:'sp 1s linear infinite'}}/>
-      <p style={{color:C.tx2,fontFamily:"'JetBrains Mono',monospace",fontSize:'.82rem'}}>{msg}</p>
+      <div style={{width:36,height:36,border:`3px solid ${C.bdr}`,borderTopColor:C.pr,borderRadius:'50%',animation:'spin .9s linear infinite'}}/>
+      <p style={{color:C.tx2,fontFamily:"'JetBrains Mono',monospace",fontSize:'.8rem'}}>{msg}</p>
     </div>
   );
 }
 
-/* ─── ERROR ─── */
 function ErrState({onRetry}){
   return(
     <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'1rem',height:'100%'}}>
-      <div style={{fontSize:'2.5rem'}}>⚠️</div>
-      <p style={{color:C.tx2}}>Erreur de génération. Vérifiez votre connexion.</p>
+      <p style={{color:C.tx2}}>⚠️ Erreur de génération.</p>
       <button onClick={onRetry} style={{background:C.prD,border:`1px solid ${C.bdrB}`,color:C.pr,padding:'.6rem 1.5rem',borderRadius:8,cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontWeight:600}}>Réessayer</button>
     </div>
   );
 }
 
-/* ─── EXERCISE VIEW ─── */
 function ExView({ex,content,code,setCode,feedback,chkBusy,onCheck,done,showHint,hintN,onHint,onPrev,onNext}){
-  if(!content) return <Loader msg="Chargement..."/>;
+  if(!content)return<Loader msg="Chargement…"/>;
   const isDone=done.has(ex.id);
   const mod=MODS.find(m=>m.id===ex.mod);
   const diffC={débutant:C.pr,intermédiaire:C.ac,avancé:C.ok,expert:C.ye}[content.difficulty]??C.pr;
 
   return(
-    <div style={{flex:1,overflowY:'auto',padding:'1.625rem 2rem 3rem'}}>
+    <div className="fade" style={{flex:1,overflowY:'auto',padding:'1.5rem 1.875rem 3rem'}}>
 
       {/* Header */}
-      <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:'1.375rem',gap:'1rem'}}>
+      <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:'1.25rem',gap:'1rem'}}>
         <div>
-          <div style={{display:'flex',alignItems:'center',gap:'.5rem',marginBottom:'.5rem',flexWrap:'wrap'}}>
-            <Pill color={mod.c}>{mod.ico} {mod.n}</Pill>
-            <Pill color={diffC}>{content.difficulty}</Pill>
-            {isDone&&<Pill color={C.ok}>✓ Complété</Pill>}
+          <div style={{display:'flex',alignItems:'center',gap:'.45rem',marginBottom:'.45rem',flexWrap:'wrap'}}>
+            <Pill c={mod.c}>{mod.ico} {mod.n}</Pill>
+            <Pill c={diffC}>{content.difficulty}</Pill>
+            {isDone&&<Pill c={C.ok}>✓ Complété</Pill>}
           </div>
-          <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:'1.45rem',fontWeight:800,lineHeight:1.2,margin:0}}>
-            <span style={{fontFamily:"'JetBrains Mono',monospace",color:C.pr,fontSize:'1rem',marginRight:'.5rem'}}>#{String(ex.id).padStart(2,'0')}</span>
+          <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:'1.4rem',fontWeight:800,lineHeight:1.2,margin:0}}>
+            <span style={{fontFamily:"'JetBrains Mono',monospace",color:C.pr,fontSize:'.95rem',marginRight:'.45rem'}}>#{String(ex.id).padStart(2,'0')}</span>
             {ex.t}
           </h1>
         </div>
-        <div style={{display:'flex',gap:'.5rem',flexShrink:0}}>
-          {onPrev&&<NavBtn onClick={onPrev}>← Préc.</NavBtn>}
-          {onNext&&<NavBtn onClick={onNext}>Suiv. →</NavBtn>}
+        <div style={{display:'flex',gap:'.4rem',flexShrink:0}}>
+          {onPrev&&<NBtn onClick={onPrev}>← Préc.</NBtn>}
+          {onNext&&<NBtn onClick={onNext}>Suiv. →</NBtn>}
         </div>
       </div>
 
-      {/* Description card */}
-      <div style={{background:C.s2,border:`1px solid ${C.bdr}`,borderRadius:12,padding:'1.25rem',marginBottom:'1.125rem'}}>
-        <p style={{color:C.tx2,lineHeight:1.75,marginBottom:content.objectives?.length?'1rem':0,fontSize:'.9rem',margin:0}}>{content.description}</p>
+      {/* Description */}
+      <div style={{background:C.s2,border:`1px solid ${C.bdr}`,borderRadius:12,padding:'1.125rem',marginBottom:'1rem'}}>
+        <p style={{color:C.tx2,lineHeight:1.75,marginBottom:content.objectives?.length?'.875rem':0,fontSize:'.885rem',margin:0}}>{content.description}</p>
         {content.objectives?.length>0&&(
-          <div style={{marginTop:'1rem'}}>
-            <div style={{fontSize:'.68rem',fontWeight:700,color:C.tx3,textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'.5rem'}}>Objectifs</div>
+          <div style={{marginTop:'.875rem'}}>
+            <div style={{fontSize:'.65rem',fontWeight:700,color:C.tx3,textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'.45rem'}}>Objectifs</div>
             {content.objectives.map((o,i)=>(
-              <div key={i} style={{display:'flex',alignItems:'flex-start',gap:'.5rem',marginBottom:'.35rem'}}>
-                <span style={{color:C.pr,fontSize:'.8rem',flexShrink:0,marginTop:'.15rem'}}>◆</span>
-                <span style={{color:C.tx2,fontSize:'.855rem',lineHeight:1.5}}>{o}</span>
+              <div key={i} style={{display:'flex',alignItems:'flex-start',gap:'.45rem',marginBottom:'.3rem'}}>
+                <span style={{color:C.pr,fontSize:'.78rem',flexShrink:0,marginTop:'.1rem'}}>◆</span>
+                <span style={{color:C.tx2,fontSize:'.845rem',lineHeight:1.5}}>{o}</span>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Editor label */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'.4rem'}}>
-        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.68rem',color:C.tx3}}>exercice_{String(ex.id).padStart(2,'0')}.dart</span>
-        <button onClick={()=>setCode(content.starterCode)} style={{background:'transparent',border:`1px solid ${C.bdr}`,color:C.tx3,padding:'.18rem .55rem',borderRadius:5,cursor:'pointer',fontSize:'.68rem',fontFamily:"'Outfit',sans-serif"}}>↺ Reset</button>
+      {/* Editor */}
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'.375rem'}}>
+        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.65rem',color:C.tx3}}>exercice_{String(ex.id).padStart(2,'0')}.dart</span>
+        <button onClick={()=>setCode(content.starterCode)} style={{background:'transparent',border:`1px solid ${C.bdr}`,color:C.tx3,padding:'.16rem .5rem',borderRadius:5,cursor:'pointer',fontSize:'.67rem',fontFamily:"'Outfit',sans-serif"}}>↺ Reset</button>
       </div>
-
-      {/* Code editor */}
       <CodeEditor code={code} onChange={setCode}/>
 
-      {/* Action buttons */}
-      <div style={{display:'flex',gap:'.75rem',marginTop:'.875rem',marginBottom:'1rem',flexWrap:'wrap'}}>
+      {/* Buttons */}
+      <div style={{display:'flex',gap:'.625rem',marginTop:'.8rem',marginBottom:'.875rem',flexWrap:'wrap'}}>
         <button onClick={onCheck} disabled={chkBusy||!code.trim()}
-          style={{background:chkBusy?'rgba(14,165,233,.25)':`linear-gradient(135deg,${C.pr},#38BDF8)`,color:'#000',border:'none',borderRadius:10,padding:'.7rem 1.625rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'.9rem',cursor:chkBusy||!code.trim()?'not-allowed':'pointer',opacity:!code.trim()?.5:1,display:'flex',alignItems:'center',gap:'.4rem',minWidth:190,justifyContent:'center'}}>
-          {chkBusy?<><Spin/>Correction en cours…</>:<>✓ Vérifier mon code</>}
+          style={{background:chkBusy?'rgba(14,165,233,.2)':`linear-gradient(135deg,${C.pr},#38BDF8)`,color:'#000',border:'none',borderRadius:10,padding:'.675rem 1.5rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'.875rem',cursor:chkBusy||!code.trim()?'not-allowed':'pointer',opacity:!code.trim()?.5:1,display:'flex',alignItems:'center',gap:'.375rem',minWidth:185,justifyContent:'center'}}>
+          {chkBusy?<><SpinIcon/>Correction…</>:<>✓ Vérifier mon code</>}
         </button>
         <button onClick={onHint}
-          style={{background:'transparent',border:`1px solid ${C.bdrB}`,color:C.pr,borderRadius:10,padding:'.7rem 1.25rem',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:'.875rem',cursor:'pointer'}}>
+          style={{background:'transparent',border:`1px solid ${C.bdrB}`,color:C.pr,borderRadius:10,padding:'.675rem 1.125rem',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:'.855rem',cursor:'pointer'}}>
           💡 Indice{showHint&&content.hints?` (${hintN+1}/${content.hints.length})`:''}
         </button>
       </div>
 
       {/* Hint */}
       {showHint&&content.hints&&(
-        <div style={{background:'rgba(14,165,233,.07)',border:`1px solid rgba(14,165,233,.2)`,borderRadius:10,padding:'1rem 1.125rem',marginBottom:'1rem'}}>
-          <div style={{fontSize:'.65rem',color:C.pr,fontWeight:700,textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'.375rem'}}>💡 Indice {hintN+1}</div>
-          <p style={{color:C.tx2,fontSize:'.875rem',lineHeight:1.65,margin:0}}>{content.hints[hintN]}</p>
+        <div style={{background:'rgba(14,165,233,.07)',border:'1px solid rgba(14,165,233,.2)',borderRadius:10,padding:'.925rem 1.1rem',marginBottom:'.875rem'}}>
+          <div style={{fontSize:'.63rem',color:C.pr,fontWeight:700,textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'.35rem'}}>💡 Indice {hintN+1}</div>
+          <p style={{color:C.tx2,fontSize:'.855rem',lineHeight:1.65,margin:0}}>{content.hints[hintN]}</p>
         </div>
       )}
 
       {/* Feedback */}
       {feedback&&<FeedbackCard feedback={feedback} onNext={onNext}/>}
 
-      {/* Concepts */}
-      <div style={{marginTop:'1.5rem',paddingTop:'1rem',borderTop:`1px solid ${C.bdr}`}}>
-        <div style={{fontSize:'.65rem',color:C.tx3,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.5rem'}}>Concepts couverts</div>
-        <div style={{display:'flex',flexWrap:'wrap',gap:'.3rem'}}>
-          {ex.k.map(k=><span key={k} style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.62rem',padding:'.16rem .48rem',borderRadius:4,background:'rgba(255,255,255,.04)',color:C.tx2,border:`1px solid ${C.bdr}`}}>{k}</span>)}
+      {/* Tags */}
+      <div style={{marginTop:'1.375rem',paddingTop:'.875rem',borderTop:`1px solid ${C.bdr}`}}>
+        <div style={{fontSize:'.62rem',color:C.tx3,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.45rem'}}>Concepts couverts</div>
+        <div style={{display:'flex',flexWrap:'wrap',gap:'.28rem'}}>
+          {ex.k.map(k=><span key={k} style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.6rem',padding:'.14rem .44rem',borderRadius:4,background:'rgba(255,255,255,.04)',color:C.tx2,border:`1px solid ${C.bdr}`}}>{k}</span>)}
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── CODE EDITOR ─── */
 function CodeEditor({code,onChange}){
   const taRef=useRef(null);
   const lnRef=useRef(null);
@@ -411,75 +422,61 @@ function CodeEditor({code,onChange}){
   function handleKey(e){
     if(e.key==='Tab'){
       e.preventDefault();
-      const s=e.target.selectionStart,end=e.target.selectionEnd;
-      const nv=(code||'').slice(0,s)+'  '+(code||'').slice(end);
+      const s=e.target.selectionStart,en=e.target.selectionEnd;
+      const nv=(code||'').slice(0,s)+'  '+(code||'').slice(en);
       onChange(nv);
       requestAnimationFrame(()=>{if(taRef.current){taRef.current.selectionStart=taRef.current.selectionEnd=s+2;}});
     }
   }
-  function syncScroll(){if(lnRef.current&&taRef.current)lnRef.current.scrollTop=taRef.current.scrollTop;}
+  function sync(){if(lnRef.current&&taRef.current)lnRef.current.scrollTop=taRef.current.scrollTop;}
 
   return(
-    <div style={{display:'flex',background:C.code,borderRadius:12,border:`1px solid ${C.bdr}`,overflow:'hidden',minHeight:300}}>
-      <div ref={lnRef} style={{padding:'1rem .75rem',color:C.tx3,fontFamily:"'JetBrains Mono',monospace",fontSize:13,lineHeight:'1.72',textAlign:'right',userSelect:'none',overflowY:'hidden',borderRight:`1px solid ${C.bdr}`,minWidth:'2.5rem',whiteSpace:'pre',flexShrink:0}}>
+    <div style={{display:'flex',background:C.code,borderRadius:12,border:`1px solid ${C.bdr}`,overflow:'hidden',minHeight:280}}>
+      <div ref={lnRef} style={{padding:'.875rem .7rem',color:C.tx3,fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,lineHeight:'1.74',textAlign:'right',userSelect:'none',overflowY:'hidden',borderRight:`1px solid ${C.bdr}`,minWidth:'2.4rem',whiteSpace:'pre',flexShrink:0}}>
         {Array.from({length:lines},(_,i)=>i+1).join('\n')}
       </div>
-      <textarea ref={taRef} value={code||''} onChange={e=>onChange(e.target.value)} onKeyDown={handleKey} onScroll={syncScroll}
+      <textarea ref={taRef} value={code||''} onChange={e=>onChange(e.target.value)} onKeyDown={handleKey} onScroll={sync}
         spellCheck={false} autoComplete="off" autoCorrect="off"
-        style={{flex:1,background:'transparent',color:C.tx,border:'none',outline:'none',padding:'1rem',fontFamily:"'JetBrains Mono',monospace",fontSize:13,lineHeight:'1.72',resize:'none',minHeight:300,tabSize:2}}/>
+        style={{flex:1,background:'transparent',color:C.tx,border:'none',outline:'none',padding:'.875rem',fontFamily:"'JetBrains Mono',monospace",fontSize:12.5,lineHeight:'1.74',resize:'none',minHeight:280,tabSize:2}}/>
     </div>
   );
 }
 
-/* ─── FEEDBACK ─── */
 function FeedbackCard({feedback,onNext}){
   const pass=feedback?.passed;
   const score=feedback?.score??0;
   const col=pass?C.ok:C.ac;
   const bg=pass?'rgba(16,185,129,':'rgba(249,115,22,';
-
   return(
-    <div style={{background:`${bg}.07)`,border:`1px solid ${bg}.28)`,borderRadius:12,padding:'1.25rem',marginBottom:'.75rem'}}>
-      <div style={{display:'flex',alignItems:'center',gap:'.875rem',marginBottom:'1rem'}}>
-        <div style={{width:50,height:50,borderRadius:'50%',background:`${bg}.14)`,border:`2px solid ${bg}.45)`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-          <span style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,fontSize:'1rem',color:col}}>{score}</span>
+    <div className="fade" style={{background:`${bg}.07)`,border:`1px solid ${bg}.28)`,borderRadius:12,padding:'1.125rem',marginBottom:'.625rem'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'.8rem',marginBottom:'.875rem'}}>
+        <div style={{width:48,height:48,borderRadius:'50%',background:`${bg}.14)`,border:`2px solid ${bg}.45)`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+          <span style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,fontSize:'.95rem',color:col}}>{score}</span>
         </div>
         <div>
-          <div style={{fontWeight:700,color:col,fontSize:'.95rem',marginBottom:'.2rem'}}>{pass?'✅ Exercice réussi !':'⚠️ Pas encore...'}</div>
-          <div style={{color:C.tx2,fontSize:'.855rem'}}>{feedback.summary}</div>
+          <div style={{fontWeight:700,color:col,fontSize:'.925rem',marginBottom:'.18rem'}}>{pass?'✅ Exercice réussi !':'⚠️ Pas encore...'}</div>
+          <div style={{color:C.tx2,fontSize:'.845rem'}}>{feedback.summary}</div>
         </div>
       </div>
-
       {feedback.positives?.length>0&&(
-        <div style={{marginBottom:'.75rem'}}>
-          <div style={{color:C.ok,fontSize:'.65rem',fontWeight:700,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.375rem'}}>Points forts</div>
-          {feedback.positives.map((p,i)=>(
-            <div key={i} style={{color:C.tx2,fontSize:'.855rem',display:'flex',gap:'.5rem',marginBottom:'.25rem'}}>
-              <span style={{color:C.ok,flexShrink:0}}>+</span>{p}
-            </div>
-          ))}
+        <div style={{marginBottom:'.625rem'}}>
+          <div style={{color:C.ok,fontSize:'.62rem',fontWeight:700,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.3rem'}}>Points forts</div>
+          {feedback.positives.map((p,i)=><div key={i} style={{color:C.tx2,fontSize:'.84rem',display:'flex',gap:'.45rem',marginBottom:'.22rem'}}><span style={{color:C.ok,flexShrink:0}}>+</span>{p}</div>)}
         </div>
       )}
-
       {feedback.improvements?.length>0&&(
-        <div style={{marginBottom:'.75rem'}}>
-          <div style={{color:C.ac,fontSize:'.65rem',fontWeight:700,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.375rem'}}>À améliorer</div>
-          {feedback.improvements.map((p,i)=>(
-            <div key={i} style={{color:C.tx2,fontSize:'.855rem',display:'flex',gap:'.5rem',marginBottom:'.25rem'}}>
-              <span style={{color:C.ac,flexShrink:0}}>→</span>{p}
-            </div>
-          ))}
+        <div style={{marginBottom:'.625rem'}}>
+          <div style={{color:C.ac,fontSize:'.62rem',fontWeight:700,textTransform:'uppercase',letterSpacing:'.09em',marginBottom:'.3rem'}}>À améliorer</div>
+          {feedback.improvements.map((p,i)=><div key={i} style={{color:C.tx2,fontSize:'.84rem',display:'flex',gap:'.45rem',marginBottom:'.22rem'}}><span style={{color:C.ac,flexShrink:0}}>→</span>{p}</div>)}
         </div>
       )}
-
       {feedback.tip&&(
-        <div style={{padding:'.75rem',background:'rgba(14,165,233,.08)',borderRadius:8,fontSize:'.855rem',color:C.tx2,display:'flex',gap:'.5rem',alignItems:'flex-start',marginBottom: pass&&onNext?'.875rem':0}}>
+        <div style={{padding:'.7rem',background:'rgba(14,165,233,.08)',borderRadius:8,fontSize:'.84rem',color:C.tx2,display:'flex',gap:'.45rem',alignItems:'flex-start',marginBottom:pass&&onNext?'.75rem':0}}>
           <span style={{color:C.pr,flexShrink:0}}>💡</span><span>{feedback.tip}</span>
         </div>
       )}
-
       {pass&&onNext&&(
-        <button onClick={onNext} style={{marginTop:feedback.tip?0:'.875rem',background:`linear-gradient(135deg,${C.ok},#34D399)`,color:'#000',border:'none',borderRadius:9,padding:'.65rem 1.5rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'.9rem',cursor:'pointer',width:'100%',display:'block'}}>
+        <button onClick={onNext} style={{background:`linear-gradient(135deg,${C.ok},#34D399)`,color:'#000',border:'none',borderRadius:9,padding:'.625rem 1.5rem',fontFamily:"'Outfit',sans-serif",fontWeight:700,fontSize:'.875rem',cursor:'pointer',width:'100%',display:'block',marginTop:feedback.tip?0:'.75rem'}}>
           Exercice suivant →
         </button>
       )}
@@ -487,28 +484,11 @@ function FeedbackCard({feedback,onNext}){
   );
 }
 
-/* ─── MINI COMPONENTS ─── */
-function Pill({color,children}){
-  return(
-    <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.65rem',color,background:`${color}18`,border:`1px solid ${color}38`,padding:'.18rem .5rem',borderRadius:100,whiteSpace:'nowrap'}}>
-      {children}
-    </span>
-  );
-}
+const Pill=({c,children})=><span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'.63rem',color:c,background:`${c}18`,border:`1px solid ${c}35`,padding:'.16rem .48rem',borderRadius:100,whiteSpace:'nowrap'}}>{children}</span>;
+const NBtn=({onClick,children})=><button onClick={onClick} style={{background:'transparent',border:`1px solid ${C.bdr}`,color:C.tx2,padding:'.38rem .75rem',borderRadius:7,cursor:'pointer',fontSize:'.75rem',fontFamily:"'Outfit',sans-serif",whiteSpace:'nowrap'}}>{children}</button>;
+const SpinIcon=()=><span style={{width:13,height:13,border:'2px solid rgba(0,0,0,.2)',borderTopColor:'#000',borderRadius:'50%',display:'inline-block',animation:'spin2 .7s linear infinite'}}/>;
 
-function NavBtn({onClick,children}){
-  return(
-    <button onClick={onClick} style={{background:'transparent',border:`1px solid ${C.bdr}`,color:C.tx2,padding:'.4rem .8rem',borderRadius:7,cursor:'pointer',fontSize:'.775rem',fontFamily:"'Outfit',sans-serif",whiteSpace:'nowrap'}}>
-      {children}
-    </button>
-  );
-}
-
-function Spin(){
-  return(
-    <>
-      <style>{`@keyframes sp2{to{transform:rotate(360deg)}}`}</style>
-      <span style={{width:14,height:14,border:`2px solid rgba(0,0,0,.2)`,borderTopColor:'#000',borderRadius:'50%',display:'inline-block',animation:'sp2 .7s linear infinite'}}/>
-    </>
-  );
-}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
