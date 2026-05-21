@@ -648,7 +648,7 @@ const PREVIEWS = [
 
   <span class="cm">// String interpolation native</span>
   <span class="f">print</span>(<span class="s">'Bienvenue sur <span class="pu">$</span><span class="v">name</span> !'</span>);
-  <span class="f">print</span>(<span class="s">'Score: <span class="pu">${</span><span class="v">score</span> * <span class="n">2</span><span class="pu">}</span> pts'</span>);
+  <span class="f">print</span>(<span class="s">'Score: <span class="pu">\${</span><span class="v">score</span> * <span class="n">2</span><span class="pu">}</span> pts'</span>);
 
   <span class="cm">// Null Safety — pas de NPE en Dart</span>
   <span class="t">String</span>? <span class="v">optional</span>;
@@ -738,8 +738,8 @@ Résultat: Excellent`
       <span class="f">fetchUser</span>(<span class="n">1</span>),
       <span class="f">fetchUser</span>(<span class="n">2</span>),
     ]);
-    <span class="f">print</span>(<span class="s">'✅ <span class="pu">${</span><span class="v">u1</span>[<span class="s">'name'</span>]<span class="pu">}</span> &amp; <span class="pu">${</span><span class="v">u2</span>[<span class="s">'name'</span>]<span class="pu">}</span> chargés!'</span>);
-    <span class="f">print</span>(<span class="s">'Niveau: <span class="pu">${</span><span class="v">u1</span>[<span class="s">'level'</span>]<span class="pu">}</span>'</span>);
+    <span class="f">print</span>(<span class="s">'✅ <span class="pu">\${</span><span class="v">u1</span>[<span class="s">'name'</span>]<span class="pu">}</span> &amp; <span class="pu">\${</span><span class="v">u2</span>[<span class="s">'name'</span>]<span class="pu">}</span> chargés!'</span>);
+    <span class="f">print</span>(<span class="s">'Niveau: <span class="pu">\${</span><span class="v">u1</span>[<span class="s">'level'</span>]<span class="pu">}</span>'</span>);
   } <span class="k">catch</span> (<span class="v">e</span>) {
     <span class="f">print</span>(<span class="s">'❌ Erreur: <span class="pu">$</span><span class="v">e</span>'</span>);
   }
